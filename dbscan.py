@@ -15,5 +15,5 @@ if __name__ == "__main__":
     n_noise_ = list(labels).count(-1)
     print('Estimated number of clusters: %d' % n_clusters_)
     print('Estimated number of noise points: %d' % n_noise_)
-    np.save('./month_result_0.1_10.npy', labels)
-    np.save('./month_core_0.1_10.npy', clustering.core_sample_indices_)
+    np.save('./result/month_result_0.1_10.npy', labels)
+    np.save('./result/month_core_0.1_10.npy', clustering.core_sample_indices_)
