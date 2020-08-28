@@ -12,6 +12,7 @@ if __name__ == "__main__":
         dis_dict[(year_data['gid2'][i] - 1, year_data['gid1'][i] - 1)] = year_data['weight']
     for i in range(60034550):
         dis_dict[(i, i)] = 1.0
+    del year_data
     values = list(dis_dict.values())
     values = np.array(values, dtype=np.float32)
     keys = list(dis_dict.keys())
