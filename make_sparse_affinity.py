@@ -5,12 +5,10 @@ import time
 from multiprocessing import Pool
 
 
-
-
 def make_dict(split_year_data):
     dis_dict = {}
     start = time.time()
-    num = split_year_data.index[0] / 11992875
+    num = split_year_data.index[0] / 23985750
     for i in range(split_year_data.shape[0]):
         dis_dict[(split_year_data['gid1'].iloc[i] - 1, split_year_data['gid2'].iloc[i] - 1)] = split_year_data['weight'].iloc[i]
         dis_dict[(split_year_data['gid2'].iloc[i] - 1, split_year_data['gid1'].iloc[i] - 1)] = split_year_data['weight'].iloc[i]
@@ -29,9 +27,9 @@ if __name__ == "__main__":
     dis_dict = {}
     start = time.time()
     result = []
-    pool = Pool(processes=46)
-    for i in range(46):
-        split_num = int(np.ceil(year_data.shape[0]) / 46. )
+    pool = Pool(processes=23)
+    for i in range(23):
+        split_num = int(np.ceil(year_data.shape[0]) / 23. )
         begin = split_num * i
         end = min( split_num * (i + 1), year_data.shape[0])
         result.append(pool.apply_async(make_dict, (year_data[:][begin:end], )))
