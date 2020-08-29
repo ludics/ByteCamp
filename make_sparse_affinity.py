@@ -8,8 +8,8 @@ if __name__ == "__main__":
     year_data.columns = ['gid1', 'uid1', 'gid2', 'uid2', 'weight']
     dis_dict = {}
     for i in range(year_data.shape[0]):
-        dis_dict[(year_data['gid1'][i] - 1, year_data['gid2'][i] - 1)] = year_data['weight']
-        dis_dict[(year_data['gid2'][i] - 1, year_data['gid1'][i] - 1)] = year_data['weight']
+        dis_dict[(year_data['gid1'][i] - 1, year_data['gid2'][i] - 1)] = year_data['weight'][i]
+        dis_dict[(year_data['gid2'][i] - 1, year_data['gid1'][i] - 1)] = year_data['weight'][i]
     for i in range(60034550):
         dis_dict[(i, i)] = 1.0
     del year_data
