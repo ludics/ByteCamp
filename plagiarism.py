@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import tqdm
 import pickle
+import os
 
 def plagiarism(c, g, k=1.0):
 	"""
