@@ -48,11 +48,34 @@ def conductance(adjacency, clusters):
     print(f'cal conductance is {time() - start}s')
     return intra / (inter + intra)
 
-def fscore(adjacency, clusters, gt):
-    """Computes graph conductance 
-    Args:
-        adjacency: sparse adjacency matrix, type: scipy.sparse.csr_matrix
-        clusters: type(numpy.array) shape(numvetexs) the same cluters's vetexs shoud have the same label
-    Returns:
-        The f1 score of the graph clusters.
-    """
+
+def f1_score(c, gt_v, gt_e):
+   """
+   args:
+        c: cluster_labe, the same cluters's vetexs shoud have the same label (list / array)
+        gt_v: list, groudtruth vetex
+        gt_e: list[list], groudtruth edge
+    return:
+        f1score, precision, recall
+   """
+    part_c = {}
+    for v in gt_v:
+        part_c[v] = c[v]
+    TP = 0
+    for e in gt_e:
+        if part_c[e[0]]==part_c[e[1]]:
+            TP += 1
+    d = {}
+    for x in part_c:
+        if part_c[x] in d:
+            d[part_c[x]] += 1
+        else:
+            d[part_c[x]] = 1
+    total = 0
+    for i in d:
+        total += (d[i]*d[i]-d[i])>>1
+    
+    precision = TP / total
+    recall = TP / len(gt_e)
+
+    return 2 * precision * recall / (precision + recall), precision, recall
