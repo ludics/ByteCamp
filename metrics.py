@@ -79,3 +79,17 @@ def f1_score(c, gt_v, gt_e):
     recall = TP / len(gt_e)
 
     return 2 * precision * recall / (precision + recall), precision, recall
+
+def read_ground_truth():
+    gt_v = set()
+    gt_e = set()
+    with open("/data00/graph_data/byte_camp_truth_pair.txt", "r") as f:
+        for l in f.readlines():
+            [a, b] = list(map(lambda x: int(x), l.strip().split(',')))
+            gt_v.add(a)
+            gt_v.add(b)
+            assert [a, b] not in gt_e, f'{[a, b]} this edge has occured'
+            assert [b, a] not in gt_e, f'{[b, a]} this edge has occured'
+            gt_e.add([a,b])
+            
+    return gt_v, gt_e
