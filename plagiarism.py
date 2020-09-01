@@ -12,17 +12,18 @@ def plagiarism(c, g, k=1.0):
 	Args:
 	g: true graph
 	c: type(numpy.array) shape(numvetexs) the same cluters's vetexs shoud have the same label
-	k: propagation coefficient
+	k: decay coefficient
 	Returns:
 	plag: How many works I plagiarized.
 	orig: Score of works I created.
 	"""
 	# clusters = {}
-	length = g.shape[0]
+	length = len(g)
+    # .shape[0]
 	orig = [0.0]*length
 	plag = [0.0]*length
 	print("[DEBUG] begin calculating ...")
-	for stealer in tqdm(range(length-2, -1, -1)):
+	for stealer in tqdm.tqdm(range(length-2, -1, -1)):
 		if c[stealer]!=-1:
 			for creater in g[stealer]:
 				if creater<stealer and c[stealer]==c[creater]:
@@ -33,10 +34,11 @@ def plagiarism(c, g, k=1.0):
 if __name__ == '__main__':
 	graph_file = os.path.join("/home/junyu/graph_data", "year_gid_uid_pair_v2e.pkl")
 	column_file = sys.argv[1]
+    # "/root/workspace/ByteCamp/result/year_result_0.01_10.npy"
 	with open(column_file, "rb") as f:
 		column = np.load(f)
 	with open(graph_file, "rb") as f:
-		graph = pickle.load(graph_file)
+		graph = pickle.load(f)
 
 	res_plag, res_orig = plagiarism(column, graph)
 
