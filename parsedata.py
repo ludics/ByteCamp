@@ -15,7 +15,6 @@ if __name__ == '__main__':
 			gid1, uid1, gid2, uid2, w = int(gid1), int(uid1), int(gid2), int(uid2), float(w)
 			# import ipdb;ipdb.set_trace()
 			if min(gid1, gid2) in v2e_map[max(gid1, gid2)]:
-				break
 				continue
 			edge_nums += 1
 			u2v_map[uid1].add(gid1)
