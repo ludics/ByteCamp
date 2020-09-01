@@ -8,24 +8,24 @@ import time
 
 paramenter_list = [
     # (0.8, 1),
-    (0.2, 1),
-    (0.1, 1),
-    (0.05, 1),
-    (0.01, 1),
-    (0.2, 2),
-    (0.1, 2),
-    (0.05, 2),
-    (0.01, 2),
+    # (0.2, 1),
+    # (0.1, 1),
+    # (0.05, 1),
+    # (0.01, 1),
+    # (0.2, 2),
+    # (0.1, 2),
+    # (0.05, 2),
+    # (0.01, 2),
     (0.8, 5),
-    (0.2, 5),
-    (0.1, 5),
-    (0.05, 5),
-    (0.01, 5),
-    (0.8, 10),
-    (0.2, 10),
+    # (0.2, 5),
+    # (0.1, 5),
+    # (0.05, 5),
+    # (0.01, 5),
+    # (0.8, 10),
+    # (0.2, 10),
     (0.1, 10),
-    (0.05, 10),
-    (0.01, 10)
+    (0.05, 10)
+    # (0.01, 10)
 ]
 
 X = sp.load_npz('/root/workspace/GraphCluster/month_dis.npz')
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # min_samples = int(sys.argv[2])
     # Compute DBSCAN
     # Number of clusters in labels, ignoring noise if present.
-    pool = Pool(processes=18)
+    pool = Pool(processes=len(paramenter_list))
     for i in range(len(paramenter_list)):
         pool.apply_async(make_dbscan, (i,))
     pool.close()
