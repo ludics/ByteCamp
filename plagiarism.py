@@ -33,7 +33,7 @@ def plagiarism(c, g, k=1.0):
 if __name__ == '__main__':
 	graph_file = os.path.join("/home/junyu/graph_data", "year_gid_uid_pair_v2e.pkl")
 	column_file = sys.argv[1]
-	with open(data_file, "rb") as f:
+	with open(column_file, "rb") as f:
 		column = np.load(f)
 	with open(graph_file, "rb") as f:
 		graph = pickle.load(graph_file)
