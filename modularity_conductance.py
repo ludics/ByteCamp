@@ -4,11 +4,11 @@ def modularity(g, c, times):
     for _ in range(times):
         i = random.randint(1, 60034549)
         j = random.randint(0, i-1)
-        if c[i]==c[j]:
+        if c[i]>-1 and c[i]==c[j]:
             if i in g[j]:
-                s += g[j][i]-degree[i]*degree[j]/2.0/276307620
+                s += g[j][i]-len(g[i])*len(g[j])/2.0/276307620
             else:
-                s -= degree[i]*degree[j]/2.0/276307620
+                s -= len(g[i])*len(g[j])/2.0/276307620
     return s/times
 
 def conductance(m, c, times):
@@ -16,7 +16,7 @@ def conductance(m, c, times):
     l = len(m.row)
     for _ in range(times):
         i = random.randint(0, l-1)
-        if c[m.row[i]]!=c[m.col[i]]: s += 1
+        if c[m.row[i]]==-1 or c[m.row[i]]!=c[m.col[i]]: s += 1
     return s/((times<<1)-s)
 
 def f1_score(c, gt_v, gt_e):
@@ -39,3 +39,4 @@ def f1_score(c, gt_v, gt_e):
     
     precision = TP/len(gt_e)
     recall = TP/total
+    return precision, recall
