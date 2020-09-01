@@ -32,11 +32,11 @@ if __name__ == '__main__':
 		print(f'total edge num is {edge_nums}')
 		print(f'total user num is {len(u2v_map)}')
 		# assert edge_nums == sum([len(v2e_map[key]) for key in v2e_map]), 'edge nums not compatible'
-		# vetex = set()
-		# for uid in u2v_map:
-		# 	vetex |= u2v_map[uid]
-		# 	u2v_map[uid] = list(u2v_map[uid])
-		# assert len(vetex) == vetex_nums, 'diff user has same video'
+		vetex = set()
+		for uid in u2v_map:
+			vetex |= u2v_map[uid]
+			u2v_map[uid] = list(u2v_map[uid])
+		assert len(vetex) == vetex_nums, 'diff user has same video'
 		v2e_map['vetexs'] = list(vetex)
 		with open(datafile.replace('.csv', '_v2e.json'), 'w') as f:
 			json.dump(v2e_map, f, indent=4)
