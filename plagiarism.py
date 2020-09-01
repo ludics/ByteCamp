@@ -22,7 +22,7 @@ def plagiarism(c, g, k=1.0):
 	plag = [0.0]*length
 	print("[DEBUG] begin calculating ...")
 	for stealer in tqdm(range(length-2, -1, -1)):
-	   if c[stealer]!=-1:
+		if c[stealer]!=-1:
 			for creater in g[stealer]:
 				if creater<stealer and c[stealer]==c[creater]:
 					plag[stealer] += g[stealer][creater]
