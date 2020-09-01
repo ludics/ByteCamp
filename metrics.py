@@ -50,14 +50,14 @@ def conductance(adjacency, clusters):
 
 
 def f1_score(c, gt_v, gt_e):
-   """
-   args:
+    """
+    args:
         c: cluster_labe, the same cluters's vetexs shoud have the same label (list / array)
         gt_v: list, groudtruth vetex
         gt_e: list[list], groudtruth edge
     return:
         f1score, precision, recall
-   """
+    """
     part_c = {}
     for v in gt_v:
         part_c[v] = c[v]
