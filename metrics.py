@@ -1,5 +1,7 @@
 import time
 import numpy as np
+import networkx as nx
+from matplotlib import pyplot as plt
 def modularity(adjacency, clusters):
     """Computes graph modularity.
     Args:
@@ -93,3 +95,15 @@ def read_ground_truth():
             gt_e.add([a,b])
             
     return gt_v, gt_e
+
+
+def drawgraph(name):
+    """
+    args:
+        name: save img path
+    """
+    gt_v, gt_e = read_ground_truth()
+    g = nx.Graph(gt_e)
+    nx.draw(g)
+    plt.savefig(name)
+    
