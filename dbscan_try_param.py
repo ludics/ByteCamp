@@ -164,12 +164,15 @@ if __name__ == "__main__":
     # min_samples = int(sys.argv[2])
     # Compute DBSCAN
     # Number of clusters in labels, ignoring noise if present.
-    pool = Pool(processes=10)
+
+    # pool = Pool(processes=10)
+    
     # make_dbscan(file_names[0], 0, (0.8, 1))
 
     # pool.apply_async(make_dbscan, (file_names[0], 0, (0.8, 1)))
     for bucket_idx in num_list[1:]:
         for config_ in paramenter_list[bucket_idx]:
-            pool.apply_async(make_dbscan, (file_names[bucket_idx], bucket_idx, config_))
+            make_dbscan(file_names[bucket_idx], bucket_idx, config_)
+            # pool.apply_async(make_dbscan, (file_names[bucket_idx], bucket_idx, config_))
     pool.close()
     pool.join()
