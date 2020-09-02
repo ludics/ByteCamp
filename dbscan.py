@@ -29,7 +29,7 @@ paramenter_list = [
     # (0.01, 10)
 ]
 
-X = sp.load_npz('/root/workspace/GraphCluster/year_dis.npz')
+X = sp.load_npz('/root/workspace/GraphCluster/sparse_matrix/year_dis.npz')
 
 
 def make_dbscan(num):
@@ -42,8 +42,8 @@ def make_dbscan(num):
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise_ = list(labels).count(-1)
     # print('{}Estimated number of noise points: %d'.format(n_noise_))
-    np.save('./result/year_result_{}_{}.npy'.format(eps, min_samples), labels)
-    np.save('./result/year_core_{}_{}.npy'.format(eps, min_samples), clustering.core_sample_indices_)   
+    np.save('/root/workspace/GraphCluster/dbscan_result/year_result_{}_{}.npy'.format(eps, min_samples), labels)
+    np.save('/root/workspace/GraphCluster/dbscan_result/year_core_{}_{}.npy'.format(eps, min_samples), clustering.core_sample_indices_)   
     print('eps={}, min_samples={}, Estimated number of clusters: {}'.format(eps, min_samples, n_clusters_))
     print('eps={}, min_samples={}, Estimated number of noise points: {}'.format(eps, min_samples, n_noise_))
     print('eps={}, min_samples={}, time cost: {:.3f}'.format(eps, min_samples, time.time() - start))

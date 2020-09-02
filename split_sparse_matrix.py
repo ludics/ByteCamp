@@ -43,7 +43,7 @@ if __name__ == "__main__":
         for cluster_id in cluster_id_list:
             bucket2gid[k] += cluster2gid[cluster_id]
 
-    X = sp.load_npz('../GraphCluster/sparse_matrix/year_dis.npz')
+    X = sp.load_npz('/root/workspace/GraphCluster/sparse_matrix/year_dis.npz')
     X_coo = sp.coo_matrix(X)
     gid2eid = {}
     for i in range(X_coo.row.shape[0]):
@@ -76,4 +76,4 @@ if __name__ == "__main__":
             re_col[i] = bucket2gidmap[k]['ori2re'][ori_col[i]]
         bucket2X[k] = sp.csr_matrix((X_coo.data[bucket2eid[k]], (re_row, re_col)))    
     for k, X in bucket2X.items():
-        sp.save_npz('../GraphCluster/sparse_matrix/year_bucket{}_dis.npz'.format(k), X)
+        sp.save_npz('/root/workspace/GraphCluster/sparse_matrix/year_bucket{}_dis.npz'.format(k), X)
