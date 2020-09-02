@@ -7,6 +7,8 @@ import collections
 import argparse 
 import scipy.sparse as scp
 import os.path as osp
+import os
+import pandas
 def cal_modularity(adjacency, clusters):
     """Computes graph modularity.
     Args:
@@ -133,15 +135,35 @@ if __name__ == '__main__':
     #start = time.time()
     #adj_matrix = scp.load_npz(args.sparse_matrix)
     #print(f'loading matirx time is {time.time()-start}s')
-    predict_file = osp.join(args.predict_root, args.predict_file)
-    predict = np.load(predict_file)
+    # predict_file = osp.join(args.predict_root, args.predict_file)
+    # predict = np.load(predict_file)
     #modularity = cal_modularity(adj_matrix, predict)
     #print(f'modularity is {modularity}')
     ##cal conductance
     #conductance = cal_conductance(adj_matrix, predict)
     #print(f'conductance is {conductance}')
     #cal fscore
+    files = [f for f in os.listdir(args.predict_root) if f.startswith('year_result')]
+    eps = []
+    minpoint = []
+    precisons = []
+    recalls = []
+    fscores = []
     gt_v, gt_e = read_ground_truth()
-    f1score, precision, recall = f1_score(predict, gt_v, gt_e)
-    print(f'f1score:{f1score}, precision:{precision}, recall:{recall}')
+    for f in files:
+        items = f.split('.')[0].split('_')
+        eps.append(float(items[-2]))
+        minpoint.append(float(items[-1]))
+        predict = np.load(osp.join(args.predict_root, f))
+        f1, pre, recall = f1_score(predict, gt_v, gt_e)
+        fscores.append(f1)
+        precisons.append(pre)
+        recalls.append(recall)
+        print(f'f1score:{f1score}, precision:{precision}, recall:{recall}')
+    dataframe = pandas.DataFram({'eps':eps, 'minpoint':minpoint, 'f1score':f1_score, \
+        'precision':precisons, 'recall':recalls})
+    dataframe.to_csv('dbscan_1_bucket.csv', index=False, ',')
+    
+    
+    
     
