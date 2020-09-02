@@ -90,9 +90,9 @@ def read_ground_truth():
             [a, b] = list(map(lambda x: int(x), l.strip().split(',')))
             gt_v.add(a)
             gt_v.add(b)
-            assert [a, b] not in gt_e, f'{[a, b]} this edge has occured'
-            assert [b, a] not in gt_e, f'{[b, a]} this edge has occured'
-            gt_e.add([a,b])
+            assert (a, b) not in gt_e, f'{[a, b]} this edge has occured'
+            assert (b, a) not in gt_e, f'{[b, a]} this edge has occured'
+            gt_e.add((a,b))
             
     return gt_v, gt_e
 
