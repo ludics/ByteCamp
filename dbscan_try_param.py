@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore")
+
 from sklearn.cluster import DBSCAN
 import scipy.sparse as sp
 import numpy as np
@@ -44,7 +47,7 @@ def make_dbscan(file_name, bucket_index, config):
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise_ = list(labels).count(-1)
     # print('{}Estimated number of noise points: %d'.format(n_noise_))
-    save_dir = '/root/workspace/GraphCluster/dbscan_result/10-bucke/result/'
+    save_dir = '/root/workspace/GraphCluster/dbscan_result/10-bucket/'
     np.save(os.path.join(save_dir,'year_result_{}bucket_{}_{}.npy'.format(bucket_index, eps, min_samples)), labels)
     np.save(os.path.join(save_dir,'year_core_{}bucket_{}_{}.npy'.format(bucket_index, eps, min_samples)), clustering.core_sample_indices_)
     res = pd.DataFrame(columns=('bucket_index', 'config', 'n_clusters', 'n_noise', 'core_sample_indices_', 'time'))
