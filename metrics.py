@@ -71,7 +71,6 @@ def f1_score(clusters, gt_v, gt_e):
     tp_dict = collections.defaultdict(int)
     index = np.array(gt_v) - 1
     TP = 0
-    total_predict_edge = 0
     for e in gt_e:
         if clusters[e[0]-1] == clusters[e[1]-1]:
             tp_dict[clusters[e[0]-1]] += 1
@@ -84,10 +83,9 @@ def f1_score(clusters, gt_v, gt_e):
             print(f'label {c} nums is zero')
             continue
         kc = (csize * csize - csize) >> 1
-        total_predict_edge += csize
         precision += tp_dict[c] / kc * csize
 
-    precision /= total_predict_edge
+    precision /= len(gt_v) 
     recall = TP / len(gt_e)
 
     fscore = 2 * precision * recall / (precision + recall)
@@ -151,7 +149,7 @@ if __name__ == '__main__':
     fscores = []
     gt_v, gt_e = read_ground_truth()
     for f in files:
-        items = f.split('.')[0].split('_')
+        items = f.rsplit('.', 1)[0].split('_')
         eps.append(float(items[-2]))
         minpoint.append(float(items[-1]))
         predict = np.load(osp.join(args.predict_root, f))
@@ -159,10 +157,10 @@ if __name__ == '__main__':
         fscores.append(f1)
         precisons.append(pre)
         recalls.append(recall)
-        print(f'f1score:{f1score}, precision:{precision}, recall:{recall}')
-    dataframe = pandas.DataFram({'eps':eps, 'minpoint':minpoint, 'f1score':f1_score, \
+        print(f'f1score:{f1}, precision:{pre}, recall:{recall}')
+    dataframe = pandas.DataFrame({'eps':eps, 'minpoint':minpoint, 'f1score':fscores, \
         'precision':precisons, 'recall':recalls})
-    dataframe.to_csv('dbscan_1_bucket.csv', index=False, ',')
+    dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
     
     
     
