@@ -87,7 +87,6 @@ def f1_score(clusters, gt_v, gt_e):
         kc = (csize * csize - csize) >> 1
         precision += tp_dict[c] / kc * csize
 
-        print(c, tp_dict[c], kc, csize)
     precision /= len(gt_v) 
     recall = TP / len(gt_e)
 
