@@ -9,6 +9,7 @@ import scipy.sparse as scp
 import os.path as osp
 import os
 import pandas
+import random
 def cal_modularity(adjacency, clusters):
     """Computes graph modularity.
     Args:
@@ -111,11 +112,12 @@ def read_ground_truth():
     return list(gt_v), list(gt_e)
 
 
-def drawgraph(edge_list):
+def drawgraph(edge_list, name):
     """
     args:
         edge_list: list[tuple]
     """
+
     g = nx.Graph(edge_list)
     nx.draw(g)
     plt.savefig(name)
@@ -133,6 +135,8 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     #draw graph
+    gt_v, gt_e = read_ground_truth()
+    drawgraph(gt_e, 'gt.png')
     #cal modularity
     #start = time.time()
     #adj_matrix = scp.load_npz(args.sparse_matrix)
@@ -145,26 +149,26 @@ if __name__ == '__main__':
     #conductance = cal_conductance(adj_matrix, predict)
     #print(f'conductance is {conductance}')
     #cal fscore
-    files = [f for f in os.listdir(args.predict_root) if f.startswith('year_result')]
-    eps = []
-    minpoint = []
-    precisons = []
-    recalls = []
-    fscores = []
-    gt_v, gt_e = read_ground_truth()
-    for f in files:
-        items = f.rsplit('.', 1)[0].split('_')
-        eps.append(float(items[-2]))
-        minpoint.append(float(items[-1]))
-        predict = np.load(osp.join(args.predict_root, f))
-        f1, pre, recall = f1_score(predict, gt_v, gt_e)
-        fscores.append(f1)
-        precisons.append(pre)
-        recalls.append(recall)
-        print(f'f1score:{f1}, precision:{pre}, recall:{recall}')
-    dataframe = pandas.DataFrame({'eps':eps, 'minpoint':minpoint, 'f1score':fscores, \
-        'precision':precisons, 'recall':recalls})
-    dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
+    # files = [f for f in os.listdir(args.predict_root) if f.startswith('year_result')]
+    # eps = []
+    # minpoint = []
+    # precisons = []
+    # recalls = []
+    # fscores = []
+    # gt_v, gt_e = read_ground_truth()
+    # for f in files:
+    #     items = f.rsplit('.', 1)[0].split('_')
+    #     eps.append(float(items[-2]))
+    #     minpoint.append(float(items[-1]))
+    #     predict = np.load(osp.join(args.predict_root, f))
+    #     f1, pre, recall = f1_score(predict, gt_v, gt_e)
+    #     fscores.append(f1)
+    #     precisons.append(pre)
+    #     recalls.append(recall)
+    #     print(f'f1score:{f1}, precision:{pre}, recall:{recall}')
+    # dataframe = pandas.DataFrame({'eps':eps, 'minpoint':minpoint, 'f1score':fscores, \
+    #     'precision':precisons, 'recall':recalls})
+    # dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
     
     
     
