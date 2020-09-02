@@ -7,7 +7,7 @@ from multiprocessing import Pool
 import time
 # /root/workspace/GraphCluster/sparse_matrix/10-bucket
 num_list = [i for i in range(10)]
-file_names = [ "/root/workspace/GraphCluster/sparse_matrix/10-bucket/year_bucket{}_dis.npz".format(i) for i in range(file_names)]
+file_names = [ "/root/workspace/GraphCluster/sparse_matrix/10-bucket/year_bucket{}_dis.npz".format(i) for i in num_list]
 
 paramenter_list = [
     (0.8, 1),
