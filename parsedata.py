@@ -37,14 +37,14 @@ if __name__ == '__main__':
 			u2v_map[uid] = list(u2v_map[uid])
 		assert len(vetex) == vetex_nums, 'diff user has same video'
 		v2e_map['vetexs'] = list(vetex)
-		with open(datafile.replace('.csv', '_v2e.json'), 'w') as f:
-			json.dump(v2e_map, f, indent=4)
+		# with open(datafile.replace('.csv', '_v2e.json'), 'w') as f:
+		# 	json.dump(v2e_map, f, indent=4)
 
-		with open(datafile.replace('.csv', '_u2v.json'), 'w') as f:
-			json.dump(u2v_map, f, indent=4)
+		# with open(datafile.replace('.csv', '_u2v.json'), 'w') as f:
+		# 	json.dump(u2v_map, f, indent=4)
 		
-		with open(datafile.replace('.csv', '_v2e.pkl'), 'wb') as f:
+		with open(datafile.replace('.csv', '_v2e_32.pkl'), 'wb') as f:
 			pickle.dump(v2e_map, f, protocol = pickle.HIGHEST_PROTOCOL)
 		
-		with open(datafile.replace('.csv', '_u2v.pkl'), 'wb') as f:
+		with open(datafile.replace('.csv', '_u2v_32.pkl'), 'wb') as f:
 			pickle.dump(u2v_map, f, protocol = pickle.HIGHEST_PROTOCOL)
