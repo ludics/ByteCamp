@@ -117,7 +117,7 @@ def drawgraph(edge_list, name):
     args:
         edge_list: list[tuple]
     """
-    edge_list = random.shuffle(edge_list)
+    edge_list = random.sample(edge_list, 1000)
     g = nx.Graph(edge_list)
     nx.draw(g)
     plt.savefig(name)
