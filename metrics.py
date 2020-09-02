@@ -82,11 +82,12 @@ def f1_score(clusters, gt_v, gt_e):
             continue
         csize = (np.where(clusters == c)[0]).shape[0]
         if csize == 1:
-            print(f'label {c} nums is one')
+            #print(f'label {c} nums is one')
             continue
         kc = (csize * csize - csize) >> 1
         precision += tp_dict[c] / kc * csize
 
+        print(c, tp_dict[c], kc, csize)
     precision /= len(gt_v) 
     recall = TP / len(gt_e)
 
@@ -102,9 +103,11 @@ def read_ground_truth():
             [a, b] = list(map(lambda x: int(x), l.strip().split(',')))
             gt_v.add(a)
             gt_v.add(b)
-            #assert (a, b) not in gt_e, f'{[a, b]} this edge has occured'
-            #assert (b, a) not in gt_e, f'{[b, a]} this edge has occured'
-            gt_e.add((a,b))
+            if a != b:
+                    a, b = min(a, b), max(a, b)
+                    #assert (a, b) not in gt_e, f'{[a, b]} this edge has occured'
+                    #assert (b, a) not in gt_e, f'{[b, a]} this edge has occured'
+                    gt_e.add((a,b))
             
     return list(gt_v), list(gt_e)
 
