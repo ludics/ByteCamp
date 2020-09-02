@@ -146,8 +146,8 @@ def make_dbscan(file_name, bucket_index, config):
     n_noise_ = list(labels).count(-1)
     # print('{}Estimated number of noise points: %d'.format(n_noise_))
     save_dir = '/root/workspace/GraphCluster/dbscan_result/10-bucket/'
-    np.save(os.path.join(save_dir,'year_result_{}bucket_{}_{}.npy'.format(bucket_index, eps, min_samples)), labels)
-    np.save(os.path.join(save_dir,'year_core_{}bucket_{}_{}.npy'.format(bucket_index, eps, min_samples)), clustering.core_sample_indices_)
+    np.save(os.path.join(save_dir,'{}'.format(bucket_idx),'year_result_{}bucket_{}_{}.npy'.format(bucket_index, eps, min_samples)), labels)
+    np.save(os.path.join(save_dir,'{}'.format(bucket_idx),'year_core_{}bucket_{}_{}.npy'.format(bucket_index, eps, min_samples)), clustering.core_sample_indices_)
     res = pd.DataFrame(columns=('bucket_index', 'config', 'n_clusters', 'n_noise', 'core_sample_indices_', 'time'))
     res = res.append({
         'bucket_index': bucket_index,
