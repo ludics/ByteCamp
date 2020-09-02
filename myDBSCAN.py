@@ -22,12 +22,12 @@ def my_dbscan(v_list, e_list, emp, min_sample):
                 x = q[k]
                 if degree[x]>=min_sample:
                     for u in e_list[x]:
-                        if e_list[v][u]>=emp:
+                        if e_list[x][u]>=emp:
                             q.append(u)
                             visited[u] = True
                 k += 1
             clusters[n] = q
-            for v in q:
-                cluster[v] = n
+            for i in q:
+                cluster[i] = n
             n += 1
     return cluster, clusters
