@@ -12,7 +12,7 @@ import time
 num_list = [i for i in range(10)]
 file_names = [ "/root/workspace/GraphCluster/sparse_matrix/10-bucket/year_bucket{}_dis.npz".format(i) for i in num_list]
 
-paramenter_list = [
+paramenter_list = {
     1: {
         (0.8, 3),
         (0.5, 3),
@@ -129,7 +129,7 @@ paramenter_list = [
     # (0.01, 5),
     # (0.01, 10),
     # (0.01, 25),
-]
+}
 
 # X = sp.load_npz('/root/workspace/GraphCluster/sparse_matrix/year_dis.npz')
 
