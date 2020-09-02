@@ -9,7 +9,7 @@ def my_dbscan(v_list, e_list, emp, min_sample):
         visited[v] = False
         d = 0
         for u in e_list[v]:
-            if e_list[v][u]>=emp and u in v_list:
+            if e_list[v][u]>=emp:
                 d += 1
         degree[v] = d
         
@@ -22,7 +22,7 @@ def my_dbscan(v_list, e_list, emp, min_sample):
                 x = q[k]
                 if degree[x]>=min_sample:
                     for u in e_list[x]:
-                        if e_list[v][u]>=emp and u in v_list:
+                        if e_list[v][u]>=emp:
                             q.append(u)
                             visited[u] = True
                 k += 1
