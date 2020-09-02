@@ -2,7 +2,11 @@ import time
 import numpy as np
 import networkx as nx
 from matplotlib import pyplot as plt
-def modularity(adjacency, clusters):
+import collections 
+import argparse 
+import scipy.sparse as scp
+import os.path as osp
+def cal_modularity(adjacency, clusters):
     """Computes graph modularity.
     Args:
         adjacency: sparse adjacency matrix, type: scipy.sparse.csr_matrix
@@ -27,7 +31,7 @@ def modularity(adjacency, clusters):
     return result / n_edges
 
 
-def conductance(adjacency, clusters):
+def cal_conductance(adjacency, clusters):
     """Computes graph conductance 
     Args:
     adjacency: sparse adjacency matrix, type: scipy.sparse.csr_matrix
@@ -51,35 +55,37 @@ def conductance(adjacency, clusters):
     return intra / (inter + intra)
 
 
-def f1_score(c, gt_v, gt_e):
+def f1_score(clusters, gt_v, gt_e):
     """
     args:
         c: cluster_labe, the same cluters's vetexs shoud have the same label (list / array)
         gt_v: list, groudtruth vetex
-        gt_e: list[list], groudtruth edge
+        gt_e: list[tuple], groudtruth edge
     return:
         f1score, precision, recall
     """
-    part_c = {}
-    for v in gt_v:
-        part_c[v] = c[v]
+    start = time.time()
+    tp_dict = collections.defaultdict(int)
+    index = np.array(gt_v) - 1
     TP = 0
+    total_predict_edge = 0
     for e in gt_e:
-        if part_c[e[0]]==part_c[e[1]]:
+        if clusters[e[0]-1] == clusters[e[1]-1]
+            tp_dict[cluters[e[0]-1]] += 1
             TP += 1
-    d = {}
-    for x in part_c:
-        if part_c[x] in d:
-            d[part_c[x]] += 1
-        else:
-            d[part_c[x]] = 1
-    total = 0
-    for i in d:
-        total += (d[i]*d[i]-d[i])>>1
-    
-    precision = TP / total
+    clusters = clusters[index]
+    precision = 0
+    for c in np.unique(clusters):
+        csize = (np.where(clusters == c)[0]).shape[0]
+        kc = (csize * csize - csize) >> 1
+        total_predict_edge += kc
+        precision += tp_dict[c] * kc
+
+    precision /= total_predict_edge
     recall = TP / len(gt_e)
 
+    fscore = 2 * precision * recall / (precision + recall)
+    print(f'evaluate fscore time is {time.time()-start}s')
     return 2 * precision * recall / (precision + recall), precision, recall
 
 def read_ground_truth():
@@ -94,16 +100,42 @@ def read_ground_truth():
             assert (b, a) not in gt_e, f'{[b, a]} this edge has occured'
             gt_e.add((a,b))
             
-    return gt_v, gt_e
+    return list(gt_v), list(gt_e)
 
 
-def drawgraph(name):
+def drawgraph(edge_list):
     """
     args:
-        name: save img path
+        edge_list: list[tuple]
     """
-    gt_v, gt_e = read_ground_truth()
-    g = nx.Graph(gt_e)
+    g = nx.Graph(edge_list)
     nx.draw(g)
     plt.savefig(name)
+    
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='some evaluation method')
+    parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
+    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/sparse_matrix/')
+    parser.add_argument('--predict_file', default='year_result_0.01_5.npy')
+
+    args = parser.parse_args()
+    return args
+
+if __name__ == '__main__':
+    args = parse_args()
+    #draw graph
+    #cal modularity
+    adj_matrix = scp.load_npz(args.sparse_matrix)
+    predict_file = osp.join(args.predict_root, args.predict_file)
+    predict = np.load(predict_file)
+    modularity = cal_modularity(adj_matrix, predict)
+    print(f'modularity is {modularity}')
+    #cal conductance
+    conductance = cal_conductance(adj_matrix, predict)
+    print(f'conductance is {conductance}')
+    #cal fscore
+    gt_v, gt_e = read_ground_truth()
+    f1score, precision, recall = f1_score(predict, gt_v, gt_e)
+    print(f'f1score:{f1score}, precision:{precision}, recall:{recall}')
     
