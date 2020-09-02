@@ -1,22 +1,64 @@
 import sys
 import numpy as np
-
+import scipy.sparse as sp
 
 if __name__ == "__main__":
-    labels = np.load(sys.argv[1])
-    labels = np.sort(labels)
+    labels_ori = np.load(sys.argv[1])
+    labels = np.sort(labels_ori)
     count = 0
-    labels_count_dict = {}
+    cluster2size = {}
     for i in range(labels.shape[0]-1):
         count += 1
         if labels[i+1] > labels[i]:
-            labels_count_dict[labels[i]] = count
+            cluster2size[labels[i]] = count
             count = 0
-    labels_count_dict[labels[-1]] = count + 1
-    count_list = np.sort(np.array(list(labels_count_dict.values())))
+    cluster2size[labels[-1]] = count + 1
+    size_list = np.sort(np.array(list(cluster2size.values())))
+    size_set = set(size_list)
+    size2num = {}
+    for i in size_set:
+        size2num[i] = np.where(size_list==i)[0].shape[0]
 
-    cnt = {}
-    clusters = {}
-    for i in labels:
-        if i in cnt:
-            
+    cluster2gid = {}
+    for i in range(labels_ori.shape[0]):
+        if labels_ori[i] in cluster2gid:
+            cluster2gid[labels_ori[i]].append(i)
+        else:
+            cluster2gid[labels_ori[i]] = [i]
+
+    level_pos = [1, 5, 10, 50, 100, 500, 1000, 5000, 10000, 50000, 30000000]
+    bucket2cluster = {}
+    for i in range(len(level_pos)-1):
+        bucket2cluster[i] = []
+
+    for cluster_id, cluster_size in cluster2size.items():
+        for i in range(len(level_pos)-1):
+            if level_pos[i] < cluster_size <= level_pos[i+1]:
+                bucket2cluster[i].append(cluster_id)
+    bucket2gid = {}
+    for i in range(len(level_pos)-1):
+        bucket2gid[i] = []
+    for k, cluster_id_list in bucket2cluster.items():
+        for cluster_id in cluster_id_list:
+            bucket2gid[k] += cluster2gid[cluster_id]
+
+    X = sp.load_npz('../GraphCluster/sparse_matrix/year_dis.npz')
+    X_coo = sp.coo_matrix(X)
+    gid2eid = {}
+    for i in range(X_coo.row.shape[0]):
+        if X_coo.row[i] in gid2eid:
+            gid2eid[X_coo.row[i]].append(i)
+        else:
+            gid2eid[X_coo.row[i]] = [i]
+
+    bucket2eid = {}
+    for i in range(len(level_pos)-1):
+        bucket2eid[i] = []
+    for k, gid_list in bucket2gid.items():
+        for gid in gid_list:
+            bucket2eid[k] += gid2eid[gid]
+    bucket2X = {}
+    for i in range(len(level_pos)-1):
+        bucket2X[i] = sp.csr_matrix((X_coo.data[bucket2eid[i]], (X_coo.row[bucket2eid[i]], X_coo.col[bucket2eid[i]])))    
+    for k, X in bucket2X.items():
+        sp.save_npz('../GraphCluster/sparse_matrix/year_bucket{}_dis.npz'.format(k), X)
