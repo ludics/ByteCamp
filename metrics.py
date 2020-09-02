@@ -1,3 +1,4 @@
+import pandas
 import time
 import numpy as np
 import networkx as nx
@@ -70,16 +71,19 @@ def f1_score(clusters, gt_v, gt_e):
     TP = 0
     total_predict_edge = 0
     for e in gt_e:
-        if clusters[e[0]-1] == clusters[e[1]-1]
-            tp_dict[cluters[e[0]-1]] += 1
+        if clusters[e[0]-1] == clusters[e[1]-1]:
+            tp_dict[clusters[e[0]-1]] += 1
             TP += 1
     clusters = clusters[index]
     precision = 0
     for c in np.unique(clusters):
         csize = (np.where(clusters == c)[0]).shape[0]
+        if csize == 1:
+            print(f'label {c} nums is zero')
+            continue
         kc = (csize * csize - csize) >> 1
-        total_predict_edge += kc
-        precision += tp_dict[c] * kc
+        total_predict_edge += csize
+        precision += tp_dict[c] / kc * csize
 
     precision /= total_predict_edge
     recall = TP / len(gt_e)
@@ -96,8 +100,8 @@ def read_ground_truth():
             [a, b] = list(map(lambda x: int(x), l.strip().split(',')))
             gt_v.add(a)
             gt_v.add(b)
-            assert (a, b) not in gt_e, f'{[a, b]} this edge has occured'
-            assert (b, a) not in gt_e, f'{[b, a]} this edge has occured'
+            #assert (a, b) not in gt_e, f'{[a, b]} this edge has occured'
+            #assert (b, a) not in gt_e, f'{[b, a]} this edge has occured'
             gt_e.add((a,b))
             
     return list(gt_v), list(gt_e)
@@ -116,7 +120,7 @@ def drawgraph(edge_list):
 def parse_args():
     parser = argparse.ArgumentParser(description='some evaluation method')
     parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
-    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/sparse_matrix/')
+    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/1-bucket/')
     parser.add_argument('--predict_file', default='year_result_0.01_5.npy')
 
     args = parser.parse_args()
@@ -126,14 +130,16 @@ if __name__ == '__main__':
     args = parse_args()
     #draw graph
     #cal modularity
-    adj_matrix = scp.load_npz(args.sparse_matrix)
+    #start = time.time()
+    #adj_matrix = scp.load_npz(args.sparse_matrix)
+    #print(f'loading matirx time is {time.time()-start}s')
     predict_file = osp.join(args.predict_root, args.predict_file)
     predict = np.load(predict_file)
-    modularity = cal_modularity(adj_matrix, predict)
-    print(f'modularity is {modularity}')
-    #cal conductance
-    conductance = cal_conductance(adj_matrix, predict)
-    print(f'conductance is {conductance}')
+    #modularity = cal_modularity(adj_matrix, predict)
+    #print(f'modularity is {modularity}')
+    ##cal conductance
+    #conductance = cal_conductance(adj_matrix, predict)
+    #print(f'conductance is {conductance}')
     #cal fscore
     gt_v, gt_e = read_ground_truth()
     f1score, precision, recall = f1_score(predict, gt_v, gt_e)
