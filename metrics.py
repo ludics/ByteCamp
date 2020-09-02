@@ -117,7 +117,7 @@ def drawgraph(edge_list, name):
     args:
         edge_list: list[tuple]
     """
-
+    edge_list = random.choice(edge_list)
     g = nx.Graph(edge_list)
     nx.draw(g)
     plt.savefig(name)
@@ -134,6 +134,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
+    random.seed(123)
     #draw graph
     gt_v, gt_e = read_ground_truth()
     drawgraph(gt_e, 'gt.png')
