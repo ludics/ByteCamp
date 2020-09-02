@@ -38,14 +38,14 @@ def subgraph_to_solve(gid, edge_list, labels, cluster2gids, g):
                 col.append(dict[u])
                 value.append(g[v][u])
     
-    return v_list, sp.csr_matrix((value, (row, col))) if value else None
+    return v_list, (sp.csr_matrix((value, (row, col))) if len(value)==0 else None)
 
 
 def new_vertex(gid, edge_list, g, labels, cluster2gids):
     ''' a new vertex with gid and edge_list comes '''
     change_g(gid, edge_list, g)
     v_list, X = subgraph_to_solve(gid, edge_list, labels, cluster2gids, g)
-    if X:
+    if X!=None:
 #DBSCAN the subgraph and maintain the global c and clusters.
         size = len(v_list)
         clustering = DBSCAN(eps=eps(size), min_samples=min_samples(size), metric='precomputed', n_jobs=10).fit(X)
