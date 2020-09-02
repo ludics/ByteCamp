@@ -72,15 +72,17 @@ def f1_score(clusters, gt_v, gt_e):
     index = np.array(gt_v) - 1
     TP = 0
     for e in gt_e:
-        if clusters[e[0]-1] == clusters[e[1]-1]:
+        if clusters[e[0]-1] != -1 and clusters[e[0]-1] == clusters[e[1]-1]:
             tp_dict[clusters[e[0]-1]] += 1
             TP += 1
     clusters = clusters[index]
     precision = 0
     for c in np.unique(clusters):
+        if c == -1:
+            continue
         csize = (np.where(clusters == c)[0]).shape[0]
         if csize == 1:
-            print(f'label {c} nums is zero')
+            print(f'label {c} nums is one')
             continue
         kc = (csize * csize - csize) >> 1
         precision += tp_dict[c] / kc * csize
