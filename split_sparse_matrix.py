@@ -2,11 +2,12 @@ import sys
 import numpy as np
 import scipy.sparse as sp
 import time
+import pickle
 
 
 if __name__ == "__main__":
     verbose = False
-    if sys.argv > 2:
+    if len(sys.argv) > 2:
         verbose = True
     start = time.time()
 
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         else:
             cluster2gid[labels_ori[i]] = [i]
 
-    level_pos = [1, 5, 10, 50, 100, 500, 1000, 5000, 10000, 50000, 30000000]
+    level_pos = [1, 5, 100, 10000, 30000000]
     bucket2cluster = {}
     for k in range(len(level_pos)-1):
         bucket2cluster[k] = []
@@ -72,15 +73,15 @@ if __name__ == "__main__":
     for k, gid_list in bucket2gid.items():
         for gid in gid_list:
             bucket2eid[k] += gid2eid[gid]
-    bucket2gidmap = {}
+    bucket_ori2re = {}
+    bucket_re2ori = {}
     for k in range(len(level_pos)-1):
-        bucket2gidmap[k] = {}
-        bucket2gidmap[k]['ori2re'] = {}
-        bucket2gidmap[k]['re2ori'] = {}
+        bucket_ori2re[k] = {}
+        bucket_re2ori[k] = {}
     for k, gid_list in bucket2gid.items():
         for i, gid in enumerate(gid_list):
-            bucket2gidmap[k]['ori2re'][gid] = i
-            bucket2gidmap[k]['re2ori'][i] = gid
+            bucket_ori2re[k][gid] = i
+            bucket_re2ori[k][i] = gid
 
     if verbose:
         print("Load X, make gid2eid, bucket2eid, bucket2gidmap at {:.3f}".format(time.time() - start))
@@ -91,16 +92,22 @@ if __name__ == "__main__":
         ori_row, ori_col = X_coo.row[bucket2eid[k]], X_coo.col[bucket2eid[k]]
         re_row, re_col = ori_row.copy(), ori_col.copy()
         for i in range(ori_col.shape[0]):
-            re_row[i] = bucket2gidmap[k]['ori2re'][ori_row[i]]
-            re_col[i] = bucket2gidmap[k]['ori2re'][ori_col[i]]
+            re_row[i] = bucket_ori2re[k][ori_row[i]]
+            re_col[i] = bucket_ori2re[k][ori_col[i]]
         bucket2X[k] = sp.csr_matrix((X_coo.data[bucket2eid[k]], (re_row, re_col)))    
     
     if verbose:
         print("Make bucket2X at {:.3f}".format(time.time() - start))
     start = time.time()
 
+    result_path = '/root/workspace/GraphCluster/sparse_matrix/4-bucket/'
     for k, X in bucket2X.items():
-        sp.save_npz('/root/workspace/GraphCluster/sparse_matrix/year_bucket{}_dis.npz'.format(k), X)
+        sp.save_npz(result_path + 'year_bucket{}_dis.npz'.format(k), X)
+
+    with open(result_path + 'bucket_ori2re.pkl', 'wb') as f:
+        pickle.dump(bucket_ori2re, f, protocol = pickle.HIGHEST_PROTOCOL)
+    with open(result_path + 'bucket_re2ori.pkl', 'wb') as f:
+        pickle.dump(bucket_re2ori, f, protocol = pickle.HIGHEST_PROTOCOL)
 
     if verbose:
         print("Save & all done at {:.3f}".format(time.time() - start))
