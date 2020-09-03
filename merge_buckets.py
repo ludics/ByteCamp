@@ -129,7 +129,7 @@ if __name__ == "__main__":
                                         if f1 > max_f1:
                                             max_f1 = f1
                                             print(f'count:{count}, params:{this_params}')
-                                            print('\tf1score:{f1}, precision:{pre}, recall:{recall}')
+                                            print(f'\tf1score:{f1}, precision:{pre}, recall:{recall}')
                                         if count % 1000 == 0:
                                             print(f'count:{count}')
                                             # print('\tf1score:{f1}, precision:{pre}, recall:{recall}')                                           
