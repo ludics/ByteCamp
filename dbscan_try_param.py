@@ -10,6 +10,7 @@ from multiprocessing import Pool
 import time
 # /root/workspace/GraphCluster/sparse_matrix/10-bucket
 num_list = [i for i in range(10)]
+# num_list = [9]
 file_names = [ "/root/workspace/GraphCluster/sparse_matrix/10-bucket/year_bucket{}_dis.npz".format(i) for i in num_list]
 
 paramenter_list = {
@@ -97,21 +98,21 @@ paramenter_list = {
     #     (0.05,3),
     # },
     9: {
-        (0.01, 3),
-        (0.01, 5),
-        (0.02, 3),
-        (0.02, 1),
-        (0.02, 5),
-        (0.03, 3),
-        (0.03, 1),
-        (0.03, 5),
+    #     (0.01, 3),
+    #     (0.01, 5),
+    #     (0.02, 3),
+    #     (0.02, 1),
+    #     (0.02, 5),
+    #     (0.03, 3),
+    #     (0.03, 1),
+    #     (0.03, 5),
+    #     (0.015, 1),
+    #     (0.015, 3),
+    #     (0.015, 5),
+    #     (0.008, 1),
+    #     (0.008, 3),
+        # (0.008, 5),
         (0.005, 1),
-        (0.005, 3),
-        (0.005, 5),
-        (0.008, 1),
-        (0.008, 3),
-        (0.008, 5),
-        # (0.5, 5),
         # (0.3, 5), 
         # (0.08, 5),
         # (0.15, 5),
@@ -184,7 +185,9 @@ if __name__ == "__main__":
     # make_dbscan(file_names[0], 0, (0.8, 1))
 
     # pool.apply_async(make_dbscan, (file_names[0], 0, (0.8, 1)))
-    for bucket_idx in num_list[1:]:
+    for bucket_idx in num_list:
+        if not bucket_idx in paramenter_list.keys():
+            continue
         for config_ in paramenter_list[bucket_idx]:
             print("[DEBUG] ", bucket_idx, " ", config_)
             make_dbscan(file_names[bucket_idx], bucket_idx, config_)
