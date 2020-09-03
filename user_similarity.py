@@ -8,7 +8,7 @@ def make_user_similarity_graph(cluster_by_user):
         s = sum(v*v for v in cluster_by_user[i].values())
         tmp = {}
         for j in cluster_by_user[i]:
-            if cluster_by_user[i][j]*amp/s>0.01:
+            if cluster_by_user[i][j]*cluster_by_user[i][j]*amp/s>0.01:
                 tmp[j] = cluster_by_user[i][j]/s
         for i in tmp:
             for j in tmp:
