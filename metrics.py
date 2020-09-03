@@ -11,7 +11,6 @@ import os
 import pandas
 import random
 import queue
-import cv2
 
 def cal_modularity(adjacency, clusters, sel_v):
     """Computes graph modularity.
@@ -239,7 +238,8 @@ def drawmatrix(gt_v, gt_e, matrix):
     index = np.array(index) - 1
     sel_matrix = matrix[index,:][:,index]
     origin_img = (sel_matrix.toarray()*255).astype('int')
-    cv2.imwrite('origin_matrix.png', origin_img)
+    plt.plot(origin_img)
+    plt.savefig('matrix.jpg')
 
 
 
