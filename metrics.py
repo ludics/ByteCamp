@@ -136,7 +136,8 @@ def draw_pred(sel_e, predict, id):
         if c == -1: continue
         index = np.where(predict == c)[0]
         print(index)
-        matrix[index,:][:,index] = 1
+        for i in index:
+            matrix[i,index] = 1
     print(matrix)
     g = nx.Graph(matrix)
     nx.draw(g, node_size=40, width=0.5)
