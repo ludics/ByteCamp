@@ -131,7 +131,7 @@ def draw_origin(matrix, sel_v, id):
     sel_v = np.array(sel_v) - 1
     sel_matrix = matrix[sel_v,:][:,sel_v]
     g = nx.Graph(sel_matrix)
-    nx.draw(g, node_size=400, width=0.5)
+    nx.draw(g, node_size=40, width=0.5)
     plt.savefig(f'origin_{id}.png')
     plt.close()
 
