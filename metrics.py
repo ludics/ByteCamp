@@ -198,12 +198,13 @@ def select_vetexs(gt_v, gt_e):
     vetexs = []
     maxnum = 0
     for c, vs in c2v.items():
-        if  30 < len(vs):
+        if  30 < len(vs) < 50:
             print(len(vs))
-            vetexs.append(random.sample(vs, min(len(vs), 200)))
+            vetexs.append(random.sample(vs, 20))
             
 
     return_edges = []
+    return_vs = []
     for i in range(3):
         vs = set(vetexs[i])
         
@@ -211,9 +212,10 @@ def select_vetexs(gt_v, gt_e):
         for e in gt_e:
             if e[0] in vs and e[1] in vs:
                 return_edge.append(e)
+        return_vs.append(list(vs))
         return_edges.append(return_edge)
 
-    return return_edges, vetexs
+    return return_edges, return_vs
     
 
 def drawgrah(gt_v, gt_e, adj_matrix, clusters):
