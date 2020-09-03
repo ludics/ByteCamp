@@ -25,6 +25,8 @@ def cal_modularity(adjacency, clusters):
     adjacency[range(vetexnums), range(vetexnums)] = 0
     nozero = adjacency.nonzero()
     adjacency[nozero[0], nozero[1]] = 1
+    index = random.sample(range(vetexnums), 10000)
+    adjacency = adjacency[index,:][:,index]
     degrees = adjacency.sum(axis=0).A1
     n_edges = degrees.sum()  # Note that it's actually 2*n_edges.
     result = 0
@@ -50,6 +52,8 @@ def cal_conductance(adjacency, clusters):
     intra = 0  # Number of intra-cluster edges.
     vetexnums = adjacency.shape[0]
     adjacency[range(vetexnums), range(vetexnums)] = 0
+    index = random.sample(range(vetexnums), 10000)
+    adjacency = adjacency[index,:][:,index]
     cluster_indices = np.zeros(adjacency.shape[0], dtype=np.bool)
     for cluster_id in np.unique(clusters):
         cluster_indices[:] = 0
@@ -152,18 +156,6 @@ def draw_pred(sel_e, predict, id):
     plt.savefig(f'predict_{id}.png')
     plt.close()
     
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='some evaluation method')
-    parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
-    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/1-bucket/')
-    parser.add_argument('--predict_file', default='year_result_0.01_5.npy')
-
-    args = parser.parse_args()
-    return args
-
-
 def bfs(v, c):
     q = queue.Queue()
     q.put(v)
@@ -227,6 +219,18 @@ def drawgrah(gt_v, gt_e, adj_matrix, clusters):
         draw_origin(adj_matrix, vetexs[i], i)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='some evaluation method')
+    parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
+    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/10-bucket/')
+    parser.add_argument('--predict_file', default='0.8927_res.npy')
+
+    args = parser.parse_args()
+    return args
+
+
+
+
 if __name__ == '__main__':
     args = parse_args()
     random.seed(123)
@@ -234,23 +238,14 @@ if __name__ == '__main__':
     gt_v, gt_e = read_ground_truth()
     predict_file = osp.join(args.predict_root, args.predict_file)
     predict = np.load(predict_file)
-    # predict = None
     matrix = scp.load_npz(args.sparse_matrix)
     drawgrah(gt_v, gt_e, matrix, predict)
-    # sel_e, sel_v = select_vetexs(gt_v, gt_e)
-    # print(len(sel_e))
-    # drawgraph(sel_e, 'select_10.png')
     #cal modularity
-    #start = time.time()
-    #adj_matrix = scp.load_npz(args.sparse_matrix)
-    #print(f'loading matirx time is {time.time()-start}s')
-    # predict_file = osp.join(args.predict_root, args.predict_file)
-    # predict = np.load(predict_file)
-    #modularity = cal_modularity(adj_matrix, predict)
-    #print(f'modularity is {modularity}')
+    modularity = cal_modularity(matrix, predict)
+    print(f'modularity is {modularity}')
     ##cal conductance
-    #conductance = cal_conductance(adj_matrix, predict)
-    #print(f'conductance is {conductance}')
+    conductance = cal_conductance(matrix, predict)
+    print(f'conductance is {conductance}')
     #cal fscore
     # files = [f for f in os.listdir(args.predict_root) if f.startswith('year_result')]
     # eps = []
