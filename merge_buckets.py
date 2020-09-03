@@ -8,24 +8,24 @@ import pickle
 VIDEO_NUM = 60034550
 
 
-def merge_bucket(left_re2ori, left_sub_labels_dict, labels, merge_dir):
+def merge_bucket(left_re2ori, left_sub_labels_dict, labels, merge_dir, all_params):
     this_bucket_order = min(left_re2ori.keys())
     this_re2ori = left_re2ori[this_bucket_order]
     this_sub_labels_dict = left_sub_labels_dict[this_bucket_order]
-    del left_re2ori[this_bucket_order]
-    del left_sub_labels_dict[this_bucket_order]
     shift = max(labels) + 1
     for param, sub_labels in this_sub_labels_dict.items():
         sub_labels[np.where(sub_labels > 0)] += shift
         labels[this_re2ori] = sub_labels
-        merge_dir = '_'.join([merge_dir, param])
-        print('bucket {} {} done'.format(this_bucket_order, merge_dir))
-        if len(left_re2ori) == 0:
-            merge_dir += '.npy'
-            print('save {}'.format(merge_dir))
-            np.save(merge_dir, labels)
+        all_params = '_'.join([all_params, param])
+        print('bucket {} {} done'.format(this_bucket_order, all_params))
+        if this_bucket_order == 9:
+            all_path = osp.join(merge_dir, all_params) + '.npy'
+            print('save {}'.format(all_path))
+            np.save(all_path, labels)
         else:
-            merge_bucket(left_re2ori, left_sub_labels_dict, labels, merge_dir)
+            this_left_re2ori = {k: v for k, v in left_re2ori.items() if k > this_bucket_order}
+            this_left_sub_labels_dict = {k: v for k, v in left_sub_labels_dict.items() if k > this_bucket_order}
+            merge_bucket(this_left_re2ori, this_left_sub_labels_dict, labels, merge_dir, all_params)
 
 if __name__ == "__main__":
     result_dir = sys.argv[1]
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     merge_dir = osp.join(result_dir, 'merged')
     if not os.path.exists(merge_dir):
         os.makedirs(merge_dir)
-    merge_bucket(bucket_re2ori, bucket_sub_labels_dict, labels, merge_dir)
+    merge_bucket(bucket_re2ori, bucket_sub_labels_dict, labels, merge_dir, 'all_labels')
 
 
 
