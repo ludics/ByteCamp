@@ -287,7 +287,8 @@ if __name__ == '__main__':
     # moduls = []
     # conductants = []
     # for f in files:
-    #     parmas = f.rsplit('.', 1)[0]
+    #     param = f.rsplit('.', 1)[0]
+        # params.append(param)
     #     # items = f.rsplit('.', 1)[0].split('_')
     #     # eps.append(float(items[-2]))
     #     # minpoint.append(float(items[-1]))
@@ -304,7 +305,7 @@ if __name__ == '__main__':
     #     conductance = cal_conductance(matrix, predict, gt_v)
     #     conductants.append(conductance)
     #     print(f'conductance is {conductance}')
-    # dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls,\
+    # dataframe = pandas.DataFrame({'params':params, 'f1score':fscores, 'modularity':moduls,\
     #     'precision':precisons, 'recall':recalls, 'conductance':conductants})
     # dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
     
