@@ -92,7 +92,7 @@ def f1_score(clusters, gt_v, gt_e):
     recall = TP / len(gt_e)
 
     fscore = 2 * precision * recall / (precision + recall)
-    print(f'evaluate fscore time is {time.time()-start}s')
+    # print(f'evaluate fscore time is {time.time()-start}s')
     return 2 * precision * recall / (precision + recall), precision, recall
 
 def read_ground_truth():

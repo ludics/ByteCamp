@@ -6,28 +6,10 @@ import pickle
 from metrics import f1_score, read_ground_truth
 import argparse
 import pandas as pd
+import time
 
 VIDEO_NUM = 60034550
 
-
-def merge_bucket(left_re2ori, left_sub_labels_dict, labels, merge_dir, all_params):
-    this_bucket_order = min(left_re2ori.keys())
-    this_re2ori = left_re2ori[this_bucket_order]
-    this_sub_labels_dict = left_sub_labels_dict[this_bucket_order]
-    shift = max(labels) + 1
-    for param, sub_labels in this_sub_labels_dict.items():
-        sub_labels[np.where(sub_labels > 0)] += shift
-        labels[this_re2ori] = sub_labels
-        all_params = '_'.join([all_params, param])
-        print('bucket {} {} done'.format(this_bucket_order, all_params))
-        if this_bucket_order == 9:
-            all_path = osp.join(merge_dir, all_params) + '.npy'
-            print('save {}'.format(all_path))
-            np.save(all_path, labels)
-        else:
-            this_left_re2ori = {k: v for k, v in left_re2ori.items() if k > this_bucket_order}
-            this_left_sub_labels_dict = {k: v for k, v in left_sub_labels_dict.items() if k > this_bucket_order}
-            merge_bucket(this_left_re2ori, this_left_sub_labels_dict, labels, merge_dir, all_params)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='some evaluation method')
@@ -75,6 +57,7 @@ if __name__ == "__main__":
     all_params = []
     max_f1 = 0
     count = 0
+    start = time.time()
     for param_1, sub_labels_1 in bucket_sub_labels_dict[1].items():
         params[1] = param_1
         sub_labels_1[np.where(sub_labels_1 > 0)] *= 10
@@ -131,7 +114,8 @@ if __name__ == "__main__":
                                             print(f'count:{count}, params:{this_params}')
                                             print(f'\tf1score:{f1}, precision:{pre}, recall:{recall}')
                                         if count % 1000 == 0:
-                                            print(f'count:{count}')
+                                            print(f'time cost:{time.time() - start}, count:{count}')
+                                            start = time.time()
                                             # print('\tf1score:{f1}, precision:{pre}, recall:{recall}')                                           
                                         count += 1
 
