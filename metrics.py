@@ -130,15 +130,15 @@ def draw_gt(edge_list, id):
 def draw_pred(sel_e, predict, id):
     sel_e = np.array(sel_e) - 1
     predict = predict[sel_e]
-    print(predict)
+    # print(predict)
     matrix = np.zeros((len(sel_e), len(sel_e)))
     for c in np.unique(predict):
         if c == -1: continue
         index = np.where(predict == c)[0]
-        print(index)
+        # print(index)
         for i in index:
             matrix[i,index] = 1
-    print(matrix)
+    # print(matrix)
     g = nx.Graph(matrix)
     nx.draw(g, node_size=40, width=0.5)
     plt.savefig(f'predict_{id}.png')
@@ -195,7 +195,7 @@ def select_vetexs(gt_v, gt_e):
     for c, vs in c2v.items():
         if  30 < len(vs) < 50:
             print(len(vs))
-            vetexs.append(random.sample(vs, 10))
+            vetexs.append(random.sample(vs, 20))
             
 
     return_edges = []
@@ -204,7 +204,7 @@ def select_vetexs(gt_v, gt_e):
         
         return_edge = []
         for e in gt_e:
-            if e[0] in vs:
+            if e[0] in vs and e[1] in vs:
                 return_edge.append(e)
         return_edges.append(return_edge)
 
