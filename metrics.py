@@ -12,7 +12,7 @@ import pandas
 import random
 import queue
 
-def cal_modularity(adjacency, clusters):
+def cal_modularity(adjacency, clusters, sel_v):
     """Computes graph modularity.
     Args:
         adjacency: sparse adjacency matrix, type: scipy.sparse.csr_matrix
@@ -25,7 +25,7 @@ def cal_modularity(adjacency, clusters):
     adjacency[range(vetexnums), range(vetexnums)] = 0
     nozero = adjacency.nonzero()
     adjacency[nozero[0], nozero[1]] = 1
-    index = random.sample(range(vetexnums), 10000)
+    index = np.array(sel_v) - 1
     adjacency = adjacency[index,:][:,index]
     degrees = adjacency.sum(axis=0).A1
     n_edges = degrees.sum()  # Note that it's actually 2*n_edges.
@@ -39,7 +39,7 @@ def cal_modularity(adjacency, clusters):
     return result / n_edges
 
 
-def cal_conductance(adjacency, clusters):
+def cal_conductance(adjacency, clusters, sel_v):
     """Computes graph conductance 
     Args:
     adjacency: sparse adjacency matrix, type: scipy.sparse.csr_matrix
@@ -52,7 +52,7 @@ def cal_conductance(adjacency, clusters):
     intra = 0  # Number of intra-cluster edges.
     vetexnums = adjacency.shape[0]
     adjacency[range(vetexnums), range(vetexnums)] = 0
-    index = random.sample(range(vetexnums), 10000)
+    index = np.array(sel_v) - 1
     adjacency = adjacency[index,:][:,index]
     cluster_indices = np.zeros(adjacency.shape[0], dtype=np.bool)
     for cluster_id in np.unique(clusters):
@@ -240,11 +240,12 @@ if __name__ == '__main__':
     predict = np.load(predict_file)
     matrix = scp.load_npz(args.sparse_matrix)
     drawgrah(gt_v, gt_e, matrix, predict)
+    sel_e, sel_v = select_vetexs(gt_v, gt_e)
     #cal modularity
-    modularity = cal_modularity(matrix, predict)
+    modularity = cal_modularity(matrix, predict, sel_v)
     print(f'modularity is {modularity}')
     ##cal conductance
-    conductance = cal_conductance(matrix, predict)
+    conductance = cal_conductance(matrix, predict, sel_v)
     print(f'conductance is {conductance}')
     #cal fscore
     # files = [f for f in os.listdir(args.predict_root) if f.startswith('year_result')]
