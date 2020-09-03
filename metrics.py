@@ -127,7 +127,7 @@ def draw_gt(edge_list, id):
     print(f'draw graph time is {time.time() - start}s')
     plt.close()
     
-def origin(matrix, sel_v):
+def draw_origin(matrix, sel_v, id):
     sel_v = np.array(sel_v) - 1
     sel_matrix = matrix[sel_v,:][:,sel_v]
     g = nx.Graph(sel_matrix)
@@ -224,6 +224,7 @@ def drawgrah(gt_v, gt_e, adj_matrix, clusters):
     for i in range(len(edges)):
         draw_pred(vetexs[i], predict, i)
         draw_gt(edges[i], i)
+        draw_origin(adj_matrix, vetexs[i], i)
 
 
 if __name__ == '__main__':
@@ -234,7 +235,7 @@ if __name__ == '__main__':
     predict_file = osp.join(args.predict_root, args.predict_file)
     predict = np.load(predict_file)
     # predict = None
-    maxtrix = scp.load_npz(args.sparse_matrix)
+    matrix = scp.load_npz(args.sparse_matrix)
     drawgrah(gt_v, gt_e, matrix, predict)
     # sel_e, sel_v = select_vetexs(gt_v, gt_e)
     # print(len(sel_e))
