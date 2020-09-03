@@ -227,13 +227,13 @@ def drawgrah(gt_v, gt_e, adj_matrix, clusters):
 def parse_args():
     parser = argparse.ArgumentParser(description='some evaluation method')
     parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
-    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/10-bucket/')
+    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/1-bucket/')
     parser.add_argument('--predict_file', default='0.8927_res.npy')
 
     args = parser.parse_args()
     return args
 
-def drawmatrix(gt_v, gt_e, )
+#def drawmatrix(gt_v, gt_e, )
 
 
 if __name__ == '__main__':
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     # conductance = cal_conductance(matrix, predict, gt_v)
     # print(f'conductance is {conductance}')
     #cal fscore
-    files = [f for f in os.listdir(args.predict_root) if f.endswith('npy')]
+    files = [f for f in os.listdir(args.predict_root) if f.endswith('npy') and f.startswith('year_result')][:7]
     # eps = []
     # minpoint = []
     precisons = []
@@ -280,9 +280,9 @@ if __name__ == '__main__':
         conductance = cal_conductance(matrix, predict, gt_v)
         conductants.append(conductance)
         print(f'conductance is {conductance}')
-    dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls\
+    dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls,\
         'precision':precisons, 'recall':recalls, 'conductance':conductants})
-    dataframe.to_csv('dbscan_10_bucket.csv', index=False, sep=',')
+    dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
     
     
     
