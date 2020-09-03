@@ -47,7 +47,7 @@ if __name__ == "__main__":
     params = {}
     params[0] = '0bucket_0.8_1'
     sub_labels_0 = bucket_sub_labels_dict[0]['0bucket_0.8_1']
-    sub_labels_0[np.where(sub_labels_0 > 0)] *= 10
+    sub_labels_0[np.where(sub_labels_0 >= 0)] *= 10
     labels[bucket_re2ori[0]] = sub_labels_0
 
     gt_v, gt_e = read_ground_truth()
@@ -60,48 +60,48 @@ if __name__ == "__main__":
     start = time.time()
     for param_1, sub_labels_1 in bucket_sub_labels_dict[1].items():
         params[1] = param_1
-        sub_labels_1[np.where(sub_labels_1 > 0)] *= 10
-        sub_labels_1[np.where(sub_labels_1 > 0)] += 1
+        sub_labels_1[np.where(sub_labels_1 >= 0)] *= 10
+        sub_labels_1[np.where(sub_labels_1 >= 0)] += 1
         labels[bucket_re2ori[1]] = sub_labels_1
         for param_2, sub_labels_2 in bucket_sub_labels_dict[2].items():
             params[2] = param_2
-            sub_labels_2[np.where(sub_labels_2 > 0)] *= 10
-            sub_labels_2[np.where(sub_labels_2 > 0)] += 2
+            sub_labels_2[np.where(sub_labels_2 >= 0)] *= 10
+            sub_labels_2[np.where(sub_labels_2 >= 0)] += 2
             labels[bucket_re2ori[2]] = sub_labels_2
             for param_3, sub_labels_3 in bucket_sub_labels_dict[3].items():
                 params[3] = param_3
-                sub_labels_3[np.where(sub_labels_3 > 0)] *= 10
-                sub_labels_3[np.where(sub_labels_3 > 0)] += 3
+                sub_labels_3[np.where(sub_labels_3 >= 0)] *= 10
+                sub_labels_3[np.where(sub_labels_3 >= 0)] += 3
                 labels[bucket_re2ori[3]] = sub_labels_3
                 for param_4, sub_labels_4 in bucket_sub_labels_dict[4].items():
                     params[4] = param_4
-                    sub_labels_4[np.where(sub_labels_4 > 0)] *= 10
-                    sub_labels_4[np.where(sub_labels_4 > 0)] += 4
+                    sub_labels_4[np.where(sub_labels_4 >= 0)] *= 10
+                    sub_labels_4[np.where(sub_labels_4 >= 0)] += 4
                     labels[bucket_re2ori[4]] = sub_labels_4
                     for param_5, sub_labels_5 in bucket_sub_labels_dict[5].items():
                         params[5] = param_5
-                        sub_labels_5[np.where(sub_labels_5 > 0)] *= 10
-                        sub_labels_5[np.where(sub_labels_5 > 0)] += 5
+                        sub_labels_5[np.where(sub_labels_5 >= 0)] *= 10
+                        sub_labels_5[np.where(sub_labels_5 >= 0)] += 5
                         labels[bucket_re2ori[5]] = sub_labels_5
                         for param_6, sub_labels_6 in bucket_sub_labels_dict[6].items():
                             params[6] = param_6
-                            sub_labels_6[np.where(sub_labels_6 > 0)] *= 10
-                            sub_labels_6[np.where(sub_labels_6 > 0)] += 6
+                            sub_labels_6[np.where(sub_labels_6 >= 0)] *= 10
+                            sub_labels_6[np.where(sub_labels_6 >= 0)] += 6
                             labels[bucket_re2ori[6]] = sub_labels_6
                             for param_7, sub_labels_7 in bucket_sub_labels_dict[7].items():
                                 params[7] = param_7
-                                sub_labels_7[np.where(sub_labels_7 > 0)] *= 10
-                                sub_labels_7[np.where(sub_labels_7 > 0)] += 7
+                                sub_labels_7[np.where(sub_labels_7 >= 0)] *= 10
+                                sub_labels_7[np.where(sub_labels_7 >= 0)] += 7
                                 labels[bucket_re2ori[7]] = sub_labels_7
                                 for param_8, sub_labels_8 in bucket_sub_labels_dict[8].items():
                                     params[8] = param_8
-                                    sub_labels_8[np.where(sub_labels_8 > 0)] *= 10
-                                    sub_labels_8[np.where(sub_labels_8 > 0)] += 8
+                                    sub_labels_8[np.where(sub_labels_8 >= 0)] *= 10
+                                    sub_labels_8[np.where(sub_labels_8 >= 0)] += 8
                                     labels[bucket_re2ori[8]] = sub_labels_8
                                     for param_9, sub_labels_9 in bucket_sub_labels_dict[9].items():
                                         params[9] = param_9
-                                        sub_labels_9[np.where(sub_labels_9 > 0)] *= 10
-                                        sub_labels_9[np.where(sub_labels_9 > 0)] += 9
+                                        sub_labels_9[np.where(sub_labels_9 >= 0)] *= 10
+                                        sub_labels_9[np.where(sub_labels_9 >= 0)] += 9
                                         labels[bucket_re2ori[9]] = sub_labels_9
                                         f1, pre, recall = f1_score(labels, gt_v, gt_e)
                                         this_params = '_'.join(list(params.values())).replace("ucket", "")
