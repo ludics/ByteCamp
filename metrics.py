@@ -125,6 +125,7 @@ def draw_gt(edge_list, id):
     nx.draw(g, node_size=40, width=0.5)
     plt.savefig(f'gt_{id}.png')
     print(f'draw graph time is {time.time() - start}s')
+    plt.close()
     
 def draw_pred(sel_e, predict, id):
     sel_e = np.array(sel_e) - 1
@@ -137,6 +138,7 @@ def draw_pred(sel_e, predict, id):
     g = nx.Graph(matrix)
     nx.draw(g, node_size=40, width=0.5)
     plt.savefig(f'predict_{id}.png')
+    plt.close()
     
 
 
@@ -208,8 +210,8 @@ def select_vetexs(gt_v, gt_e):
 def drawgrah(gt_v, gt_e, adj_matrix, clusters):
     edges, vetexs = select_vetexs(gt_v, gt_e)
     for i in range(len(edges)):
-        draw_pred(edges[i], predict, i)
-        draw_gt(edge_list[i], i)
+        # draw_pred(edges[i], predict, i)
+        draw_gt(edges[i], i)
 
 
 if __name__ == '__main__':
@@ -219,6 +221,7 @@ if __name__ == '__main__':
     gt_v, gt_e = read_ground_truth()
     predict_file = osp.join(args.predict_root, args.predict_file)
     predict = np.load(predict_file)
+    # predict = None
     # maxtrix = scp.load_npz(args.sparse_matrix)
     matrix = None
     drawgrah(gt_v, gt_e, matrix, predict)
