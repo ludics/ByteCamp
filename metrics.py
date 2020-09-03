@@ -11,6 +11,7 @@ import os
 import pandas
 import random
 import queue
+import cv2
 
 def cal_modularity(adjacency, clusters, sel_v):
     """Computes graph modularity.
@@ -140,8 +141,8 @@ def draw_origin(matrix, sel_v, id):
     nx.draw(g, node_size=40, width=0.5)
     plt.savefig(f'origin_{id}.png')
     plt.close()
-    index = random.sample(range(len(sel_v)), 1000)
-    index_matrix = sel_matrix[index,:][:,index]
+    
+
     
 
 def draw_pred(sel_e, predict, id):
@@ -233,7 +234,13 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-#def drawmatrix(gt_v, gt_e, )
+def drawmatrix(gt_v, gt_e, matrix):
+    index = random.sample(gt_v, 1000)
+    index = np.array(index) - 1
+    sel_matrix = matrix[index,:][:,index]
+    origin_img = (sel_matrix.toarray()*255).astype('int')
+    cv2.imwrite('origin_matrix.png', origin_img)
+
 
 
 if __name__ == '__main__':
@@ -244,6 +251,7 @@ if __name__ == '__main__':
     # predict_file = osp.join(args.predict_root, args.predict_file)
     # predict = np.load(predict_file)
     matrix = scp.load_npz(args.sparse_matrix)
+    drawmatrix(gt_v, gt_e, matrix)
     #drawgrah(gt_v, gt_e, matrix, predict)
     # sel_e, sel_v = select_vetexs(gt_v, gt_e)
     #cal modularity
@@ -253,36 +261,34 @@ if __name__ == '__main__':
     # conductance = cal_conductance(matrix, predict, gt_v)
     # print(f'conductance is {conductance}')
     #cal fscore
-    files = [f for f in os.listdir(args.predict_root) if f.endswith('npy') and f.startswith('year_result')][:7]
-    # eps = []
-    # minpoint = []
-    precisons = []
-    recalls = []
-    fscores = []
-    params = []
-    moduls = []
-    conductants = []
-    for f in files:
-        parmas = f.rsplit('.', 1)[0]
-        # items = f.rsplit('.', 1)[0].split('_')
-        # eps.append(float(items[-2]))
-        # minpoint.append(float(items[-1]))
-        predict = np.load(osp.join(args.predict_root, f))
-        f1, pre, recall = f1_score(predict, gt_v, gt_e)
-        fscores.append(f1)
-        precisons.append(pre)
-        recalls.append(recall)
-        print(f'f1score:{f1}, precision:{pre}, recall:{recall}')
-        modularity = cal_modularity(matrix, predict, gt_v)
-        moduls.append(modularity)
-        print(f'modularity is {modularity}')
-        ##cal conductance
-        conductance = cal_conductance(matrix, predict, gt_v)
-        conductants.append(conductance)
-        print(f'conductance is {conductance}')
-    dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls,\
-        'precision':precisons, 'recall':recalls, 'conductance':conductants})
-    dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
+    # files = [f for f in os.listdir(args.predict_root) if f.endswith('npy') and f.startswith('year_result')][:7]
+    # precisons = []
+    # recalls = []
+    # fscores = []
+    # params = []
+    # moduls = []
+    # conductants = []
+    # for f in files:
+    #     parmas = f.rsplit('.', 1)[0]
+    #     # items = f.rsplit('.', 1)[0].split('_')
+    #     # eps.append(float(items[-2]))
+    #     # minpoint.append(float(items[-1]))
+    #     predict = np.load(osp.join(args.predict_root, f))
+    #     f1, pre, recall = f1_score(predict, gt_v, gt_e)
+    #     fscores.append(f1)
+    #     precisons.append(pre)
+    #     recalls.append(recall)
+    #     print(f'f1score:{f1}, precision:{pre}, recall:{recall}')
+    #     modularity = cal_modularity(matrix, predict, gt_v)
+    #     moduls.append(modularity)
+    #     print(f'modularity is {modularity}')
+    #     ##cal conductance
+    #     conductance = cal_conductance(matrix, predict, gt_v)
+    #     conductants.append(conductance)
+    #     print(f'conductance is {conductance}')
+    # dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls,\
+    #     'precision':precisons, 'recall':recalls, 'conductance':conductants})
+    # dataframe.to_csv('dbscan_1_bucket.csv', index=False, sep=',')
     
     
     
