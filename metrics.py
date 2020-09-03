@@ -10,6 +10,8 @@ import os.path as osp
 import os
 import pandas
 import random
+import queue
+
 def cal_modularity(adjacency, clusters):
     """Computes graph modularity.
     Args:
@@ -98,7 +100,7 @@ def f1_score(clusters, gt_v, gt_e):
 def read_ground_truth():
     gt_v = set()
     gt_e = set()
-    with open("/data00/graph_data/byte_camp_truth_pair.txt", "r") as f:
+    with open("byte_camp_truth_pair.txt", "r") as f:
         for l in f.readlines():
             [a, b] = list(map(lambda x: int(x), l.strip().split(',')))
             gt_v.add(a)
@@ -112,16 +114,31 @@ def read_ground_truth():
     return list(gt_v), list(gt_e)
 
 
-def drawgraph(edge_list, name):
+def draw_gt(edge_list, id):
     """
     args:
         edge_list: list[tuple]
     """
-    edge_list = random.sample(edge_list, 1000)
+    start = time.time()
+    # edge_list = random.sample(edge_list, 5000)
     g = nx.Graph(edge_list)
-    nx.draw(g)
-    plt.savefig(name)
+    nx.draw(g, node_size=40, width=0.5)
+    plt.savefig(f'gt_{id}.png')
+    print(f'draw graph time is {time.time() - start}s')
     
+def draw_pred(sel_e, predict, id):
+    sel_e = np.array(sel_e) - 1
+    predict = predict[sel_e]
+    matrix = np.zeros((len(sel_e), len(sel_e)))
+    for c in np.unique(predict):
+        if c == -1: continue
+        index = np.where(predict == c)[0]
+        matrix[index,:][:,index] = 1
+    g = nx.Graph(matrix)
+    nx.draw(g, node_size=40, width=0.5)
+    plt.savefig(f'predict_{id}.png')
+    
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='some evaluation method')
@@ -132,12 +149,82 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
+def bfs(v, c):
+    q = queue.Queue()
+    q.put(v)
+    color[v] = c
+    while(q.qsize()):
+        cur = q.get()
+        for i in adj_matrix[cur]:
+            if color[i] == 0:
+                q.put(i)
+                color[i] = c
+
+
+def select_vetexs(gt_v, gt_e):
+    adj_matrix = collections.defaultdict(list)
+    for e in gt_e:
+        adj_matrix[e[0]].append(e[1])
+        adj_matrix[e[1]].append(e[0])
+    color = collections.defaultdict(int)
+    c = 1
+    for v in gt_v:
+        if color[v] == 0:
+            q = queue.Queue()
+            q.put(v)
+            color[v] = c
+            while(q.qsize()):
+                cur = q.get()
+                for i in adj_matrix[cur]:
+                    if color[i] == 0:
+                        q.put(i)
+                        color[i] = c
+            c += 1
+    c2v = collections.defaultdict(list)
+    for k, v in color.items():
+        c2v[v].append(k)
+    vetexs = []
+    maxnum = 0
+    for c, vs in c2v.items():
+        if  30 < len(vs) < 50:
+            print(len(vs))
+            vetexs.append(random.sample(vs, 10))
+            
+
+    return_edges = []
+    for i in range(3):
+        vs = set(vetexs[i])
+        
+        return_edge = []
+        for e in gt_e:
+            if e[0] in vs:
+                return_edge.append(e)
+        return_edges.append(return_edge)
+
+    return return_edges, vetexs
+    
+
+def drawgrah(gt_v, gt_e, adj_matrix, clusters):
+    edges, vetexs = select_vetexs(gt_v, gt_e)
+    for i in range(len(edges)):
+        draw_pred(edges[i], predict, i)
+        draw_gt(edge_list[i], i)
+
+
 if __name__ == '__main__':
     args = parse_args()
     random.seed(123)
     #draw graph
     gt_v, gt_e = read_ground_truth()
-    drawgraph(gt_e, 'gt.png')
+    predict_file = osp.join(args.predict_root, args.predict_file)
+    predict = np.load(predict_file)
+    # maxtrix = scp.load_npz(args.sparse_matrix)
+    matrix = None
+    drawgrah(gt_v, gt_e, matrix, predict)
+    # sel_e, sel_v = select_vetexs(gt_v, gt_e)
+    # print(len(sel_e))
+    # drawgraph(sel_e, 'select_10.png')
     #cal modularity
     #start = time.time()
     #adj_matrix = scp.load_npz(args.sparse_matrix)
