@@ -135,6 +135,7 @@ def draw_pred(sel_e, predict, id):
     for c in np.unique(predict):
         if c == -1: continue
         index = np.where(predict == c)[0]
+        print(index)
         matrix[index,:][:,index] = 1
     print(matrix)
     g = nx.Graph(matrix)
