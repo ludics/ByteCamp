@@ -210,7 +210,7 @@ def select_vetexs(gt_v, gt_e):
 def drawgrah(gt_v, gt_e, adj_matrix, clusters):
     edges, vetexs = select_vetexs(gt_v, gt_e)
     for i in range(len(edges)):
-        # draw_pred(edges[i], predict, i)
+        draw_pred(vetexs[i], predict, i)
         draw_gt(edges[i], i)
 
 
