@@ -33,14 +33,14 @@ if __name__ == "__main__":
     bucket_sub_labels_dict = {}
     for k in range(bucket_num):
         bucket_sub_labels_dict[k] = {}
-        result_dir_k = osp.join(result_dir, str(k))
+        result_dir_k = osp.join(result_dir, 'candidate', str(k))
         names = [name for name in os.listdir(result_dir_k) if "result" in name]
         for name in names:
             full_path = osp.join(result_dir_k, name)
             para_info = '_'.join('.'.join(full_path.split('.')[:-1]).split('_')[-3:])
             bucket_sub_labels_dict[k][para_info] = np.load(full_path)
     
-    with open(result_dir + 'bucket_re2ori_list.pkl', 'rb') as f:
+    with open(osp.join(result_dir, 'bucket_re2ori_list.pkl'), 'rb') as f:
         bucket_re2ori = pickle.load(f)
     labels = np.array([-1] * VIDEO_NUM).astype('int32')
     merge_dir = sys.argv[3]
