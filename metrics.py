@@ -127,6 +127,14 @@ def draw_gt(edge_list, id):
     print(f'draw graph time is {time.time() - start}s')
     plt.close()
     
+def origin(matrix, sel_v):
+    sel_v = np.array(sel_v) - 1
+    sel_matrix = matrix[sel_v,:][:,sel_v]
+    g = nx.Graph(sel_matrix)
+    nx.draw(g, node_size=400, width=0.5)
+    plt.savefig(f'origin_{id}.png')
+    plt.close()
+
 def draw_pred(sel_e, predict, id):
     sel_e = np.array(sel_e) - 1
     predict = predict[sel_e]
@@ -226,8 +234,7 @@ if __name__ == '__main__':
     predict_file = osp.join(args.predict_root, args.predict_file)
     predict = np.load(predict_file)
     # predict = None
-    # maxtrix = scp.load_npz(args.sparse_matrix)
-    matrix = None
+    maxtrix = scp.load_npz(args.sparse_matrix)
     drawgrah(gt_v, gt_e, matrix, predict)
     # sel_e, sel_v = select_vetexs(gt_v, gt_e)
     # print(len(sel_e))
