@@ -19,8 +19,10 @@ def merge_bucket(left_re2ori, left_sub_labels_dict, labels, merge_dir):
         sub_labels[np.where(sub_labels > 0)] += shift
         labels[this_re2ori] = sub_labels
         merge_dir = '_'.join([merge_dir, param])
+        print('bucket {} {} done'.format(this_bucket_order, merge_dir))
         if len(left_re2ori) == 0:
             merge_dir += '.npy'
+            print('save {}'.format(merge_dir))
             np.save(merge_dir, labels)
         else:
             merge_bucket(left_re2ori, left_sub_labels_dict, labels, merge_dir)
@@ -40,9 +42,10 @@ if __name__ == "__main__":
     
     with open(result_dir + 'bucket_re2ori_list.pkl', 'rb') as f:
         bucket_re2ori = pickle.load(f)
-    labels = np.array([-1] * VIDEO_NUM)
+    labels = np.array([-1] * VIDEO_NUM).astype('int32')
     merge_dir = sys.argv[3]
-
+    if not os.path.exists(merge_dir):
+        os.makedirs(merge_dir)
     merge_bucket(bucket_re2ori, bucket_sub_labels_dict, labels, merge_dir)
 
 
