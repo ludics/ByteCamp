@@ -121,7 +121,7 @@ if __name__ == "__main__":
                                         sub_labels_9[np.where(sub_labels_9 > 0)] += 9
                                         labels[bucket_re2ori[9]] = sub_labels_9
                                         f1, pre, recall = f1_score(labels, gt_v, gt_e)
-                                        this_params = '_'.join(params).replace("ucket", "")
+                                        this_params = '_'.join(list(params.values())).replace("ucket", "")
                                         all_params.append(this_params)
                                         fscores.append(f1)
                                         precisons.append(pre)
