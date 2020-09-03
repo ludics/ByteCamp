@@ -3,6 +3,7 @@ import numpy as np
 import scipy.sparse as sp
 import time
 import pickle
+import os
 
 
 if __name__ == "__main__":
@@ -101,6 +102,10 @@ if __name__ == "__main__":
     start = time.time()
 
     result_path = '/root/workspace/GraphCluster/sparse_matrix/4-bucket/'
+
+    if not os.path.exists(result_path):
+        os.makedirs(result_path)
+
     for k, X in bucket2X.items():
         sp.save_npz(result_path + 'year_bucket{}_dis.npz'.format(k), X)
 
