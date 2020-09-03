@@ -233,18 +233,32 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def drawmatrix(gt_v, gt_e, matrix):
+def drawmatrix(gt_v, gt_e, matrix, predict):
+    
     index = []
     for v in gt_v:
         index.extend(v)
-    #index = random.sample(gt_v, 1000)
+    size = len(index)
+    matrix = np.zeros((size, size))
     index = np.array(index) - 1
+    predict = predict[index]
+    for c in np.unique(predict):
+        if c == -1:continue 
+        ids = np.where(predict == c)[0]
+        for i in ids:
+            matrix[i,ids] = 1
+    ax = seaborn.heatmap(matrix, vmin=0, vmax=1, cmap='GnBu')
+    fig = ax.get_figure()
+    fig.savefig('matrix_predict.png')
+    #index = random.sample(gt_v, 1000)
+    
+    index = np.sort(index)
     sel_matrix = matrix[index,:][:,index]
     #origin_img = (sel_matrix.toarray()*255).astype('int')
     img = sel_matrix.toarray()
     ax = seaborn.heatmap(img, vmin=0, vmax=1, cmap='GnBu')
     fig = ax.get_figure()
-    fig.savefig('matrix.png')
+    fig.savefig('matrix_origin.png')
 
 if __name__ == '__main__':
     args = parse_args()
