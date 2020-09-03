@@ -43,7 +43,7 @@ if __name__ == "__main__":
     with open(osp.join(result_dir, 'bucket_re2ori_list.pkl'), 'rb') as f:
         bucket_re2ori = pickle.load(f)
     labels = np.array([-1] * VIDEO_NUM).astype('int32')
-    merge_dir = sys.argv[3]
+    merge_dir = osp.join(result_dir, 'merged')
     if not os.path.exists(merge_dir):
         os.makedirs(merge_dir)
     merge_bucket(bucket_re2ori, bucket_sub_labels_dict, labels, merge_dir)
