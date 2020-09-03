@@ -11,7 +11,7 @@ import os
 import pandas
 import random
 import queue
-
+import seaborn
 def cal_modularity(adjacency, clusters, sel_v):
     """Computes graph modularity.
     Args:
@@ -198,9 +198,9 @@ def select_vetexs(gt_v, gt_e):
     vetexs = []
     maxnum = 0
     for c, vs in c2v.items():
-        if  30 < len(vs) < 50:
+        if  30 < len(vs):
             print(len(vs))
-            vetexs.append(random.sample(vs, 20))
+            vetexs.append(random.sample(vs, min(len(vs), 200)))
             
 
     return_edges = []
@@ -234,14 +234,17 @@ def parse_args():
     return args
 
 def drawmatrix(gt_v, gt_e, matrix):
-    index = random.sample(gt_v, 1000)
+    index = []
+    for v in gt_v:
+        index.extend(v)
+    #index = random.sample(gt_v, 1000)
     index = np.array(index) - 1
     sel_matrix = matrix[index,:][:,index]
-    origin_img = (sel_matrix.toarray()*255).astype('int')
-    plt.plot(origin_img)
-    plt.savefig('matrix.jpg')
-
-
+    #origin_img = (sel_matrix.toarray()*255).astype('int')
+    img = sel_matrix.toarray()
+    ax = seaborn.heatmap(img, vmin=0, vmax=1, cmap='GnBu')
+    fig = ax.get_figure()
+    fig.savefig('matrix.png')
 
 if __name__ == '__main__':
     args = parse_args()
@@ -251,7 +254,8 @@ if __name__ == '__main__':
     # predict_file = osp.join(args.predict_root, args.predict_file)
     # predict = np.load(predict_file)
     matrix = scp.load_npz(args.sparse_matrix)
-    drawmatrix(gt_v, gt_e, matrix)
+    sel_e, sel_v = select_vetexs(gt_v, gt_e)
+    drawmatrix(sel_v, gt_e, matrix)
     #drawgrah(gt_v, gt_e, matrix, predict)
     # sel_e, sel_v = select_vetexs(gt_v, gt_e)
     #cal modularity
