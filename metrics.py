@@ -26,6 +26,7 @@ def cal_modularity(adjacency, clusters, sel_v):
     nozero = adjacency.nonzero()
     adjacency[nozero[0], nozero[1]] = 1
     index = np.array(sel_v) - 1
+    clusters = clusters[index]
     adjacency = adjacency[index,:][:,index]
     degrees = adjacency.sum(axis=0).A1
     n_edges = degrees.sum()  # Note that it's actually 2*n_edges.
@@ -53,6 +54,7 @@ def cal_conductance(adjacency, clusters, sel_v):
     vetexnums = adjacency.shape[0]
     adjacency[range(vetexnums), range(vetexnums)] = 0
     index = np.array(sel_v) - 1
+    clusters = clusters[index]
     adjacency = adjacency[index,:][:,index]
     cluster_indices = np.zeros(adjacency.shape[0], dtype=np.bool)
     for cluster_id in np.unique(clusters):
@@ -61,7 +63,7 @@ def cal_conductance(adjacency, clusters, sel_v):
         adj_submatrix = adjacency[cluster_indices, :]
         inter += np.sum(adj_submatrix[:, cluster_indices])
         intra += np.sum(adj_submatrix[:, ~cluster_indices])
-    print(f'cal conductance is {time() - start}s')
+    print(f'cal conductance is {time.time() - start}s')
     return intra / (inter + intra)
 
 
@@ -222,7 +224,7 @@ def drawgrah(gt_v, gt_e, adj_matrix, clusters):
 def parse_args():
     parser = argparse.ArgumentParser(description='some evaluation method')
     parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
-    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/10-bucket/')
+    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/10-bucket/merged')
     parser.add_argument('--predict_file', default='0.8927_res.npy')
 
     args = parser.parse_args()
@@ -239,13 +241,13 @@ if __name__ == '__main__':
     predict_file = osp.join(args.predict_root, args.predict_file)
     predict = np.load(predict_file)
     matrix = scp.load_npz(args.sparse_matrix)
-    drawgrah(gt_v, gt_e, matrix, predict)
+    #drawgrah(gt_v, gt_e, matrix, predict)
     sel_e, sel_v = select_vetexs(gt_v, gt_e)
     #cal modularity
-    modularity = cal_modularity(matrix, predict, sel_v)
+    modularity = cal_modularity(matrix, predict, gt_v)
     print(f'modularity is {modularity}')
     ##cal conductance
-    conductance = cal_conductance(matrix, predict, sel_v)
+    conductance = cal_conductance(matrix, predict, gt_v)
     print(f'conductance is {conductance}')
     #cal fscore
     # files = [f for f in os.listdir(args.predict_root) if f.startswith('year_result')]
