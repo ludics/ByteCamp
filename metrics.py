@@ -140,6 +140,9 @@ def draw_origin(matrix, sel_v, id):
     nx.draw(g, node_size=40, width=0.5)
     plt.savefig(f'origin_{id}.png')
     plt.close()
+    index = random.sample(range(len(sel_v)), 1000)
+    index_matrix = sel_matrix[index,:][:,index]
+    
 
 def draw_pred(sel_e, predict, id):
     sel_e = np.array(sel_e) - 1
@@ -230,7 +233,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-
+def drawmatrix(gt_v, gt_e, )
 
 
 if __name__ == '__main__':
@@ -277,7 +280,7 @@ if __name__ == '__main__':
         conductance = cal_conductance(matrix, predict, gt_v)
         conductants.append(conductance)
         print(f'conductance is {conductance}')
-    dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls,\
+    dataframe = pandas.DataFrame({'params':parmas, 'f1score':fscores, 'modularity':moduls\
         'precision':precisons, 'recall':recalls, 'conductance':conductants})
     dataframe.to_csv('dbscan_10_bucket.csv', index=False, sep=',')
     
