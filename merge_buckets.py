@@ -109,6 +109,7 @@ if __name__ == "__main__":
                                         fscores.append(f1)
                                         precisons.append(pre)
                                         recalls.append(recall)
+                                        np.save(osp.join(result_dir, this_params + '.npy'), labels)
                                         if f1 > max_f1:
                                             max_f1 = f1
                                             print(f'count:{count}, params:{this_params}')
