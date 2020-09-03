@@ -130,6 +130,7 @@ def draw_gt(edge_list, id):
 def draw_pred(sel_e, predict, id):
     sel_e = np.array(sel_e) - 1
     predict = predict[sel_e]
+    print(predict)
     matrix = np.zeros((len(sel_e), len(sel_e)))
     for c in np.unique(predict):
         if c == -1: continue
