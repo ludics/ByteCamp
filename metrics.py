@@ -204,7 +204,7 @@ def select_vetexs(gt_v, gt_e):
     for c, vs in c2v.items():
         if  30 < len(vs) < 50:
             print(len(vs))
-            vetexs.append(random.sample(vs, 20))
+            vetexs.append(vs[:20])
             
 
     return_edges = []
