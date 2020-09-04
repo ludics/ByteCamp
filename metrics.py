@@ -136,7 +136,7 @@ def draw_gt(edge_list, id):
     plt.close()
     return pos
     
-def draw_origin(matrix, sel_v, id):
+def draw_origin(matrix, sel_v, id, pos, index):
     # sel_v = np.array(sel_v) - 1
     sel_v = np.array(index)
     sel_matrix = matrix[sel_v,:][:,sel_v]
@@ -149,6 +149,7 @@ def draw_origin(matrix, sel_v, id):
     
 
 def draw_pred(sel_e, predict, id, pos):
+    import ipdb;
     sel_e = np.array(sel_e) - 1
     predict = predict[sel_e]
     # print(predict)
@@ -202,14 +203,14 @@ def select_vetexs(gt_v, gt_e):
     vetexs = []
     maxnum = 0
     for c, vs in c2v.items():
-        if  30 < len(vs) < 50:
+        if  30 < len(vs):
             print(len(vs))
-            vetexs.append(vs[:20])
+            vetexs.append(vs)
             
 
     return_edges = []
     return_vs = []
-    for i in range(3):
+    for i in range(len(vetexs)):
         vs = set(vetexs[i])
         
         return_edge = []
@@ -223,18 +224,38 @@ def select_vetexs(gt_v, gt_e):
     
 
 def drawgrah(gt_v, gt_e, adj_matrix, clusters):
-    edges, vetexs = select_vetexs(gt_v, gt_e)
+    # edges, vetexs = select_vetexs(gt_v, gt_e)
     index_dict = json.load(open('index.json'))
-    for i in range(len(edges)):
-        pos = draw_gt(edges[i], i)
-        index = []
-        new_pos = {}
-        for j, v in enumerate(vetexs[i]):
-            index.append(index_dict[v])
-            new_pos[j] = pos[v]
-        draw_pred(vetexs[i], predict, i, new_pos)
+    sel_vs = list(map(int, index_dict.keys()))
+    # import ipdb;ipdb.set_trace()
+    sel_v = list(random.sample(sel_vs, 60))
+    sel_e = []
+    for e in gt_e:
+        if e[0] in sel_v and e[1] in sel_v:
+            sel_e.append(e)
+    pos = draw_gt(sel_e, 4)
+    new_pos = {}
+    index = []
+    for i, v in enumerate(sel_v):
+        new_pos[i] = pos[v]
+        index.append(index_dict[str(v)])
+    draw_pred(sel_v, predict, 4, new_pos)
+    draw_origin(adj_matrix, sel_v, 4, new_pos, index)
+    # for i in range(3):
+    #     sel_v = sel_vs[i*20:(i+1)*20]
+    #     sel_e = []
+    #     for e in gt_e:
+    #         if e[0] in sel_v and e[1] in sel_v:
+    #             sel_e.append(e)
+    #     pos = draw_gt(sel_e, i)
+    #     index = []
+    #     new_pos = {}
+    #     for j, v in enumerate(sel_v):
+    #         index.append(index_dict[str(v)])
+    #         new_pos[j] = pos[int(v)]
+    #     draw_pred(sel_v, predict, i, new_pos)
 
-        draw_origin(adj_matrix, vetexs[i], i, new_pos, index)
+    #     draw_origin(adj_matrix, sel_v, i, new_pos, index)
 
 
 def parse_args():
@@ -249,8 +270,10 @@ def parse_args():
 def drawmatrix(gt_v, gt_e, matrix, predict):
     
     index = []
-    for v in gt_v:
+    sel_e = []
+    for i, v in enumerate(gt_v):
         index.extend(v)
+        sel_e.extend(gt_e[i])
     size = len(index)
     matrix = np.zeros((size, size))
     index = np.array(index) - 1
@@ -265,24 +288,35 @@ def drawmatrix(gt_v, gt_e, matrix, predict):
     fig.savefig('matrix_predict.png')
     #index = random.sample(gt_v, 1000)
     
-    index = np.sort(index)
+    # index = np.sort(index)
     sel_matrix = matrix[index,:][:,index]
     #origin_img = (sel_matrix.toarray()*255).astype('int')
     img = sel_matrix.toarray()
     ax = seaborn.heatmap(img, vmin=0, vmax=1, cmap='GnBu')
     fig = ax.get_figure()
     fig.savefig('matrix_origin.png')
+    index_dict = {}
+    for i, v in enumerate(index):
+        index_dict[v] = i
+    matrix_gt = np.zeros((size, size))
+    for e in sel_e:
+        v1, v2 = index_dict[e[0]], index_dict[e[1]]
+        matrix_gt[v1][v2] = 1
+        matrix_gt[v2][v1] = 1
+    ax = seaborn.heatmap(matrix_gt, vmin=0, vmax=1, cmap='GnBu')
+    fig = ax.get_figure()
+    fig.savefig('matrix_gt.png')
 
 if __name__ == '__main__':
     args = parse_args()
     random.seed(123)
     #draw graph
     gt_v, gt_e = read_ground_truth()
-    # predict_file = osp.join(args.predict_root, args.predict_file)
-    predict_file = '0b_0.8_1_1b_0.8_1_2b_0.5_3_3b_0.5_3_4b_0.5_3_5b_0.6_3_6b_0.5_3_7b_0.5_3_8b_0.05_3_9b_0.05_1.npy'
+    predict_file = osp.join(args.predict_root, args.predict_file)
+    # predict_file = '0b_0.8_1_1b_0.8_1_2b_0.5_3_3b_0.5_3_4b_0.5_3_5b_0.6_3_6b_0.5_3_7b_0.5_3_8b_0.05_3_9b_0.05_1.npy'
     predict = np.load(predict_file)
-    # matrix = scp.load_npz(args.sparse_matrix)
-    matrix = scp.load_npz('part_matrix.npz')
+    matrix = scp.load_npz(args.sparse_matrix)
+    # matrix = scp.load_npz('part_matrix.npz')
     # sel_e, sel_v = select_vetexs(gt_v, gt_e)
     # drawmatrix(sel_v, gt_e, matrix)
     drawgrah(gt_v, gt_e, matrix, predict)
