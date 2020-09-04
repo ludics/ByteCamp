@@ -38,8 +38,6 @@ def get_size_dist(name_dir):
     return np.sort(np.array(list(cluster2size.values())))
 
 
-
-
 def cal_modularity(adjacency, clusters, sel_v):
     """Computes graph modularity.
     Args:
