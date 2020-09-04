@@ -261,8 +261,8 @@ def drawgrah(gt_v, gt_e, adj_matrix, clusters):
 def parse_args():
     parser = argparse.ArgumentParser(description='some evaluation method')
     parser.add_argument('--sparse_matrix', default='/root/workspace/GraphCluster/sparse_matrix/year_sim.npz')
-    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/1-bucket/')
-    parser.add_argument('--predict_file', default='0.8927_res.npy')
+    parser.add_argument('--predict_root', default='/root/workspace/GraphCluster/dbscan_result/10-bucket/')
+    parser.add_argument('--predict_file', default='/Users/sabrina/Documents/bytecamp/ByteCamp/0b_0.8_1_1b_0.8_1_2b_0.5_3_3b_0.5_3_4b_0.5_3_5b_0.6_3_6b_0.5_3_7b_0.5_3_8b_0.05_3_9b_0.05_1.npy')
 
     args = parser.parse_args()
     return args
