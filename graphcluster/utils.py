@@ -15,6 +15,15 @@ import seaborn
 import json
 
 
+# 计算两个概率list的相对熵
+def calculate_kl(prob_list_1, prob_list_2):
+    KL = 0.0
+    for i, prob_a in enumerate(prob_list_1):
+        KL +=  prob_a * np.log(prob_a / prob_list_2[i], 2)
+
+    return KL
+
+
 def get_size_dist(name_dir):
     labels_ori = np.load(name_dir)
     labels = np.sort(labels_ori)
