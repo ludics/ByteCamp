@@ -15,6 +15,18 @@ import seaborn
 import json
 
 
+def read_ground_truth():
+    gt_v = set()
+    gt_e = []
+    with open("data/graph_data/byte_camp_truth_pair.txt", "r") as f:
+        for l in f:
+            [a, b] = list(map(lambda x: int(x), l.split(',')))
+            gt_v.add(a)
+            gt_v.add(b)
+            gt_e.append([a,b])
+    return gt_v, gt_e
+
+
 # 计算两个概率list的相对熵
 def calculate_kl(prob_list_1, prob_list_2):
     KL = 0.0
