@@ -9,14 +9,14 @@ import time
 paramenter_list = [
     # (0.99, 10),
     # (0.995, 10),
-    (0.985, 10),
-    (0.99, 20),
+    # (0.985, 10),
+    # (0.99, 20),
     # (0.995, 20),
-    (0.985, 20),
-    # (0.99, 50),
+    # (0.985, 20),
+    (0.99, 50)
     # (0.995, 50),
     # (0.985, 50),
-    (0.9, 10)
+    # (0.9, 10)
 
 
     # (0.2, 1),
@@ -55,7 +55,7 @@ def make_dbscan(num):
     n_core_ = len(clustering.core_sample_indices_)
     # print('{}Estimated number of noise points: %d'.format(n_noise_))
     np.save('/root/workspace/GraphCluster/user_dbscan_result/{}_{}.npy'.format(eps, min_samples), labels)
-    np.save('/root/workspace/GraphCluster/user_dbscan_result/{}_{}.npy'.format(eps, min_samples), clustering.core_sample_indices_)   
+    # np.save('/root/workspace/GraphCluster/user_dbscan_result/core_{}_{}.npy'.format(eps, min_samples), clustering.core_sample_indices_)   
     # print('eps={}, min_samples={}, Estimated number of clusters: {}'.format(eps, min_samples, n_clusters_))
     # print('eps={}, min_samples={}, Estimated number of noise points: {}'.format(eps, min_samples, n_noise_))
     # print('eps={}, min_samples={}, time cost: {:.3f}'.format(eps, min_samples, time.time() - start))
