@@ -12,6 +12,7 @@ import pandas
 import random
 import queue
 import seaborn
+import json
 def cal_modularity(adjacency, clusters, sel_v):
     """Computes graph modularity.
     Args:
@@ -128,23 +129,26 @@ def draw_gt(edge_list, id):
     start = time.time()
     # edge_list = random.sample(edge_list, 5000)
     g = nx.Graph(edge_list)
-    nx.draw(g, node_size=40, width=0.5)
+    pos = nx.nx_agraph.graphviz_layout(g)
+    nx.draw(g, node_size=40, width=0.5, pos=pos)
     plt.savefig(f'gt_{id}.png')
     print(f'draw graph time is {time.time() - start}s')
     plt.close()
+    return pos
     
 def draw_origin(matrix, sel_v, id):
-    sel_v = np.array(sel_v) - 1
+    # sel_v = np.array(sel_v) - 1
+    sel_v = np.array(index)
     sel_matrix = matrix[sel_v,:][:,sel_v]
     g = nx.Graph(sel_matrix)
-    nx.draw(g, node_size=40, width=0.5)
+    nx.draw(g, node_size=40, width=0.5, pos=pos)
     plt.savefig(f'origin_{id}.png')
     plt.close()
     
 
     
 
-def draw_pred(sel_e, predict, id):
+def draw_pred(sel_e, predict, id, pos):
     sel_e = np.array(sel_e) - 1
     predict = predict[sel_e]
     # print(predict)
@@ -157,7 +161,7 @@ def draw_pred(sel_e, predict, id):
             matrix[i,index] = 1
     # print(matrix)
     g = nx.Graph(matrix)
-    nx.draw(g, node_size=40, width=0.5)
+    nx.draw(g, node_size=40, width=0.5, pos=pos)
     plt.savefig(f'predict_{id}.png')
     plt.close()
     
@@ -220,10 +224,17 @@ def select_vetexs(gt_v, gt_e):
 
 def drawgrah(gt_v, gt_e, adj_matrix, clusters):
     edges, vetexs = select_vetexs(gt_v, gt_e)
+    index_dict = json.load(open('index.json'))
     for i in range(len(edges)):
-        draw_pred(vetexs[i], predict, i)
-        draw_gt(edges[i], i)
-        draw_origin(adj_matrix, vetexs[i], i)
+        pos = draw_gt(edges[i], i)
+        index = []
+        new_pos = {}
+        for j, v in enumerate(vetexs[i]):
+            index.append(index_dict[v])
+            new_pos[j] = pos[v]
+        draw_pred(vetexs[i], predict, i, new_pos)
+
+        draw_origin(adj_matrix, vetexs[i], i, new_pos, index)
 
 
 def parse_args():
@@ -268,11 +279,13 @@ if __name__ == '__main__':
     #draw graph
     gt_v, gt_e = read_ground_truth()
     # predict_file = osp.join(args.predict_root, args.predict_file)
-    # predict = np.load(predict_file)
-    matrix = scp.load_npz(args.sparse_matrix)
-    sel_e, sel_v = select_vetexs(gt_v, gt_e)
-    drawmatrix(sel_v, gt_e, matrix)
-    #drawgrah(gt_v, gt_e, matrix, predict)
+    predict_file = '0b_0.8_1_1b_0.8_1_2b_0.5_3_3b_0.5_3_4b_0.5_3_5b_0.6_3_6b_0.5_3_7b_0.5_3_8b_0.05_3_9b_0.05_1.npy'
+    predict = np.load(predict_file)
+    # matrix = scp.load_npz(args.sparse_matrix)
+    matrix = scp.load_npz('part_matrix.npz')
+    # sel_e, sel_v = select_vetexs(gt_v, gt_e)
+    # drawmatrix(sel_v, gt_e, matrix)
+    drawgrah(gt_v, gt_e, matrix, predict)
     # sel_e, sel_v = select_vetexs(gt_v, gt_e)
     #cal modularity
     # modularity = cal_modularity(matrix, predict, gt_v)
