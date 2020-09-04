@@ -15,6 +15,27 @@ import seaborn
 import json
 
 
+def read_ground_truth():
+    gt_v = set()
+    gt_e = []
+    with open("data/graph_data/byte_camp_truth_pair.txt", "r") as f:
+        for l in f:
+            [a, b] = list(map(lambda x: int(x), l.split(',')))
+            gt_v.add(a)
+            gt_v.add(b)
+            gt_e.append([a,b])
+    return gt_v, gt_e
+
+
+# 计算两个概率list的相对熵
+def calculate_kl(prob_list_1, prob_list_2):
+    KL = 0.0
+    for i, prob_a in enumerate(prob_list_1):
+        KL +=  prob_a * np.log(prob_a / prob_list_2[i], 2)
+
+    return KL
+
+
 def get_size_dist(name_dir):
     labels_ori = np.load(name_dir)
     labels = np.sort(labels_ori)
@@ -27,8 +48,6 @@ def get_size_dist(name_dir):
             count = 0
     cluster2size[labels[-1]] = count + 1
     return np.sort(np.array(list(cluster2size.values())))
-
-
 
 
 def cal_modularity(adjacency, clusters, sel_v):
