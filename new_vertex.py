@@ -37,9 +37,17 @@ def subgraph_to_solve(gid, edge_list, labels, cluster2gids, g):
                 row.append(dict[v])
                 col.append(dict[u])
                 value.append(g[v][u])
-    
-    return v_list, (sp.csr_matrix((value, (row, col))) if len(value)==0 else None)
+    if len(value)==0: return v_list, None
+    else: return v_list, (sp.csr_matrix((value, (row, col)))
 
+def eps(size):
+    if size<=10: return 0.8
+    elif size<=5000: return 0.5
+    else: return 0.05
+def min_samples(size):
+    if size<=10: return 1
+    elif size<=10000: return 3
+    else: return 1
 
 def new_vertex(gid, edge_list, g, labels, cluster2gids):
     ''' a new vertex with gid and edge_list comes '''
@@ -53,9 +61,10 @@ def new_vertex(gid, edge_list, g, labels, cluster2gids):
         m = max(labels)+1
         
         for i in range(size):
-            labels[v_list[i]] = local_labels[i]+m
-            if (local_labels[i]+m) in cluster2gids:
-                cluster2gids[local_labels[i]+m].append(v_list[i])
-            else:
-                cluster2gids[local_labels[i]+m] = [v_list[i]]
+            if local_labels[i]!=-1:
+                labels[v_list[i]] = local_labels[i]+m
+                if (local_labels[i]+m) in cluster2gids:
+                    cluster2gids[local_labels[i]+m].append(v_list[i])
+                else:
+                    cluster2gids[local_labels[i]+m] = [v_list[i]]
 
